@@ -1,0 +1,9 @@
+# Dev
+.idea
+.vscode
+
+# Config
+prod.yaml
+local.yaml
+dev.yaml
+test.yaml
