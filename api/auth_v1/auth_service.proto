@@ -1,0 +1,35 @@
+syntax = "proto3";
+package auth_v1;
+option go_package = "github.com/OddEer0/mirage-auth-service/api/auth_v1";
+
+message ErrorResponse {
+  string message = 1;
+  int32 statusCode = 2;
+}
+
+message TokenResponse {
+  string value = 1;
+}
+
+message RegistrationRequest {
+  string login = 1;
+  string password = 2;
+  string email = 3;
+}
+
+message LoginRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string id = 1;
+  string login = 2;
+  string password = 3;
+  string email = 4;
+  string role = 5;
+}
+
+service AuthService {
+  rpc registration(RegistrationRequest) returns (AuthResponse) {}
+}
