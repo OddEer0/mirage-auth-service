@@ -2,10 +2,7 @@ syntax = "proto3";
 package auth_v1;
 option go_package = "github.com/OddEer0/mirage-auth-service/api/auth_v1";
 
-message ErrorResponse {
-  string message = 1;
-  int32 statusCode = 2;
-}
+message Empty {}
 
 message TokenResponse {
   string value = 1;
@@ -22,14 +19,65 @@ message LoginRequest {
   string password = 2;
 }
 
-message AuthResponse {
+message JwtTokens {
+  string accessToken = 1;
+  string refreshToken = 2;
+}
+
+message ResponseUser {
   string id = 1;
   string login = 2;
-  string password = 3;
-  string email = 4;
-  string role = 5;
+  string email = 3;
+  string role = 4;
+}
+
+message AuthResponse {
+  ResponseUser user = 1;
+  JwtTokens tokens = 2;
+}
+
+message Link {
+  string link = 1;
+}
+
+message ChangePasswordRequestWithAuth {
+  string id = 1;
+  string oldPassword = 2;
+  string newPassword = 3;
+  string refreshToken = 4;
+}
+
+message ChangePasswordRequestWithoutAuth {
+  string id = 1;
+  string oldPassword = 2;
+  string newPassword = 3;
+}
+
+message CheckAuthRequest {
+  string accessToken = 1;
+}
+
+message JwtUser {
+  string id = 1;
+  string role = 4;
+}
+
+message RefreshToken {
+  string refreshToken = 1;
+}
+
+message AccessToken {
+  string accessToken = 1;
 }
 
 service AuthService {
   rpc registration(RegistrationRequest) returns (AuthResponse) {}
+  rpc login(LoginRequest) returns (AuthResponse) {}
+  rpc refresh(RefreshToken) returns (AuthResponse) {}
+  rpc logout(RefreshToken) returns (Empty) {}
+  rpc linkActivate(Link) returns (Empty) {}
+  rpc changePasswordWithAuth(ChangePasswordRequestWithAuth) returns (Empty) {}
+  rpc changePasswordWithoutAuth(ChangePasswordRequestWithoutAuth) returns (Empty) {}
+  rpc checkAuth(AccessToken) returns (JwtUser) {}
+  rpc confirmChangePassword(Link) returns (Empty) {}
 }

@@ -1,21 +1,12 @@
 package main
 
 import (
-	"context"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/config"
+	"github.com/OddEer0/mirage-auth-service/internal/presentation/handler/grpcv1"
 	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
 	"google.golang.org/grpc"
 	"net"
 )
-
-type AuthServiceServer struct {
-	authv1.UnimplementedAuthServiceServer
-}
-
-func (a *AuthServiceServer) Registration(ctx context.Context, request *authv1.RegistrationRequest) (*authv1.AuthResponse, error) {
-	//TODO implement me
-	panic("implement me")
-}
 
 func main() {
 	cfg := config.MustLoad()
@@ -24,7 +15,7 @@ func main() {
 		panic(err)
 	}
 	grpcServer := grpc.NewServer()
-	authv1.RegisterAuthServiceServer(grpcServer, &AuthServiceServer{})
+	authv1.RegisterAuthServiceServer(grpcServer, grpcv1.New())
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
 	}

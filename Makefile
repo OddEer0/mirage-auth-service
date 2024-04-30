@@ -11,3 +11,6 @@ build:
 
 proto:
 	protoc -I $(PROTO_SRC) $(PROTO_FILES) --go_out=$(PROTO_OUT) --go_opt=paths=source_relative --go-grpc_out=$(PROTO_OUT) --go-grpc_opt=paths=source_relative
+
+run_client:
+	go run client/main.go
