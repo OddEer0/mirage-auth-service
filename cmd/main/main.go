@@ -31,7 +31,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(logger.LoggingInterceptor),
+	)
 	authv1.RegisterAuthServiceServer(grpcServer, grpcv1.New(cfg, log, conn))
 	log.Info("Server started to address: " + cfg.Server.Address)
 	if err := grpcServer.Serve(lis); err != nil {

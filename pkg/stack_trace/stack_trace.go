@@ -60,9 +60,11 @@ func Get(ctx context.Context) string {
 	if ok {
 		var res strings.Builder
 		res.WriteString("[")
-		for _, str := range val.stack {
+		for i, str := range val.stack {
 			res.WriteString(str)
-			res.WriteString(", ")
+			if i != len(val.stack)-1 {
+				res.WriteString(" | ")
+			}
 		}
 		res.WriteString("]")
 		return res.String()

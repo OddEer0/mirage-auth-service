@@ -4,11 +4,9 @@ import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
 )
 
 func (a *AuthServiceServer) Registration(ctx context.Context, data *authv1.RegistrationRequest) (*authv1.AuthResponse, error) {
-	ctx = stackTrace.Init(ctx)
 	authRes, err := a.authUseCase.Registration(ctx, &appDto.RegistrationData{
 		Login:    data.Login,
 		Password: data.Password,
