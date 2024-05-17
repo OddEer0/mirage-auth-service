@@ -50,6 +50,6 @@ func setupProdLog(out io.Writer) *slog.Logger {
 }
 
 func setupTestLog(out io.Writer) *slog.Logger {
-	jsonHandler := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelError})
-	return slog.New(jsonHandler)
+	handler := AppLogHandler{slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelError})}
+	return slog.New(handler)
 }

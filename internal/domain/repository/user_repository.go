@@ -17,6 +17,6 @@ type UserRepository interface {
 	BanUserById(ctx context.Context, id string, banReason string) (*model.User, error)
 	UnbanUserById(ctx context.Context, id string) (*model.User, error)
 	HasUserById(ctx context.Context, id string) (bool, error)
-	HasUserByLogin(ctx context.Context, id string) (bool, error)
-	HasUserByEmail(ctx context.Context, id string) (bool, error)
+	HasUserByLogin(ctx context.Context, login string) (bool, error)
+	HasUserByEmail(ctx context.Context, email string) (bool, error)
 }

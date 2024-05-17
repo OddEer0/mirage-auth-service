@@ -16,7 +16,7 @@ import (
 func main() {
 	cfg := config.MustLoad()
 	log := logger.SetupLogger(cfg.Env)
-	conn, err := postgres.Connect(cfg)
+	conn, err := postgres.Connect(cfg, log)
 	defer func(conn *pgx.Conn, ctx context.Context) {
 		err := conn.Close(ctx)
 		if err != nil {
@@ -32,7 +32,7 @@ func main() {
 		panic(err)
 	}
 	grpcServer := grpc.NewServer()
-	authv1.RegisterAuthServiceServer(grpcServer, grpcv1.New(conn))
+	authv1.RegisterAuthServiceServer(grpcServer, grpcv1.New(cfg, log, conn))
 	log.Info("Server started to address: " + cfg.Server.Address)
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
