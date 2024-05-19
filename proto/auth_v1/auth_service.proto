@@ -1,8 +1,13 @@
 syntax = "proto3";
 package auth_v1;
-option go_package = "github.com/OddEer0/mirage-auth-service/api/auth_v1";
+option go_package = "github.com/OddEer0/mirage-auth-service/proto/auth_v1";
 
 message Empty {}
+
+message ErrorDetail {
+  string message = 1;
+  int32 code = 2;
+}
 
 message Id {
   string id = 1;
