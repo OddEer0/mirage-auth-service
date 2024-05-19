@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	domainError "github.com/OddEer0/mirage-auth-service/internal/domain/domain_error"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
 	domainQuery "github.com/OddEer0/mirage-auth-service/internal/domain/repository/domain_query"
@@ -37,26 +36,36 @@ type postgresRepository struct {
 }
 
 func (p *postgresRepository) GetById(ctx context.Context, id string) (*model.User, error) {
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: GetById")
+	defer stackTrace.Done(ctx)
+
 	row := p.db.QueryRow(ctx, getUserByIdQuery, id)
 	var user model.User
 	err := row.Scan(&user.Id, &user.Login, &user.Email, &user.Password, &user.Role, &user.IsBanned, &user.BanReason, &user.UpdatedAt, &user.CreatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, domainError.NotFound
+			p.log.ErrorContext(ctx, "not found error", slog.Any("cause", err))
+			return nil, ErrUserNotFound
 		}
-		return nil, err
+		p.log.ErrorContext(ctx, "internal error", slog.Any("cause", err))
+		return nil, ErrInternal
 	}
 	return &user, nil
 }
 
 func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*model.User, uint, error) {
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: GetById")
+	defer stackTrace.Done(ctx)
+
 	offset := query.PaginationQuery.PageCount * (query.PaginationQuery.CurrentPage - 1)
 	limit := query.PaginationQuery.PageCount
 	pageCount, err := getPageCount(ctx, p.db, "users", query.PaginationQuery.PageCount)
 	if err != nil {
+		p.log.ErrorContext(ctx, "getPageCount fn error", slog.Any("cause", err))
 		return nil, pageCount, err
 	}
 
+	// TODO - аллоциируется память на каждый вызов функций, попытаться сделать константой
 	queryStr := `
 		SELECT id, login, email, password, role, isBanned, banReason, updatedAt, createdAt FROM Users
 		ORDER BY ` + query.OrderQuery.OrderBy + " " + query.OrderQuery.OrderDirection + `
@@ -65,6 +74,7 @@ func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.
 
 	rows, err := p.db.Query(ctx, queryStr, limit, offset)
 	if err != nil {
+		p.log.ErrorContext(ctx, "db query error", slog.Any("cause", err))
 		return nil, 0, err
 	}
 
@@ -73,12 +83,14 @@ func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.
 		data := model.User{}
 		err := rows.Scan(&data.Id, &data.Login, &data.Email, &data.Password, &data.Role, &data.IsBanned, &data.BanReason, &data.UpdatedAt, &data.CreatedAt)
 		if err != nil {
+			p.log.ErrorContext(ctx, "rows scan error", slog.Any("cause", err))
 			return nil, 0, err
 		}
 		users = append(users, &data)
 	}
 
 	if err = rows.Err(); err != nil {
+		p.log.ErrorContext(ctx, "rows error", slog.Any("cause", err))
 		return nil, 0, err
 	}
 
@@ -121,7 +133,7 @@ func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, 
 	var exists bool
 	err := p.db.QueryRow(ctx, hasUserByFieldQuery, "id", id).Scan(&exists)
 	if err != nil {
-		p.log.Error("database query error", slog.Any("cause", err))
+		p.log.ErrorContext(ctx, "database query error", slog.Any("cause", err))
 		return false, err
 	}
 	return exists, nil
@@ -145,7 +157,7 @@ func (p *postgresRepository) HasUserByEmail(ctx context.Context, email string) (
 	var exists bool
 	err := p.db.QueryRow(ctx, hasUserByFieldQuery, "email", email).Scan(&exists)
 	if err != nil {
-		p.log.Error("Error database query", slog.Any("cause", err))
+		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err))
 		return false, err
 	}
 	return exists, nil
@@ -159,7 +171,7 @@ func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*mod
 	row := p.db.QueryRow(ctx, createUserQuery, data.Id, data.Login, data.Email, data.Password, data.Role, data.IsBanned, data.BanReason, data.UpdatedAt, data.CreatedAt)
 	err := row.Scan(&createdUser.Id, &createdUser.Login, &createdUser.Email, &createdUser.Password, &createdUser.Role, &createdUser.IsBanned, &createdUser.BanReason, &createdUser.UpdatedAt, &createdUser.CreatedAt)
 	if err != nil {
-		p.log.Error("error create new user", slog.Any("cause", err))
+		p.log.ErrorContext(ctx, "error create new user", slog.Any("cause", err))
 		return nil, err
 	}
 	return &createdUser, nil
