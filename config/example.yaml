@@ -1,9 +1,12 @@
 env: "prod"
-api_key: "your_super_puper_auth_service_key"
-access_token_time: "48h"
-refresh_token_time: "128h"
-admin_name: "eer0"
-admin_password: "Illidan4142"
+super_admin:
+  login: "login"
+  password: "Password1234"
+  email: "xdxdxd@gmail.com"
+secret:
+  api_key: "your_super_puper_auth_service_key"
+  access_token_time: "48h"
+  refresh_token_time: "128h"
 http_server:
   address: "${SERVER_PORT}"
   timeout: 4s
@@ -14,3 +17,5 @@ postgres:
   user: "${POSTGRES_USER}"
   password: "${POSTGRES_PASSWORD}"
   dbname: "${POSTGRES_DBNAME}"
+path:
+  log_file: "log/prod.log" # stdout string to os.Stdout

@@ -15,16 +15,15 @@ func Connect(cfg *config.Config, log *slog.Logger) (*pgx.Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Info("Connect Postgres")
+	log.Info("connect Postgres")
 	err = InitMigration(ctx, conn, log)
 	if err != nil {
 		return nil, err
 	}
-	log.Info("Success init postgres")
+	log.Info("success init postgres")
 	err = InitSuperAdmin(ctx, conn, cfg, log)
 	if err != nil {
 		return nil, err
 	}
-	log.Info("Success add super admin")
 	return conn, nil
 }

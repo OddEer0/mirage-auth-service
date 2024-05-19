@@ -8,12 +8,12 @@ import (
 
 func (s *service) Generate(data JwtUserData) (*JwtTokens, error) {
 	cfg := s.cfg
-	accessDuration, err := time.ParseDuration(cfg.AccessTokenTime)
+	accessDuration, err := time.ParseDuration(cfg.Secret.AccessTokenTime)
 	if err != nil {
 		s.log.Error("Parse duration from cfg error")
 		return nil, appError.Internal
 	}
-	refreshDuration, err := time.ParseDuration(cfg.RefreshTokenTime)
+	refreshDuration, err := time.ParseDuration(cfg.Secret.RefreshTokenTime)
 	if err != nil {
 		s.log.Error("Parse duration from cfg error")
 		return nil, appError.Internal
@@ -28,12 +28,12 @@ func (s *service) Generate(data JwtUserData) (*JwtTokens, error) {
 	}
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
-	accessTokenString, err := accessToken.SignedString([]byte(cfg.ApiKey))
+	accessTokenString, err := accessToken.SignedString([]byte(cfg.Secret.ApiKey))
 	if err != nil {
 		s.log.Error("access token signed token string error")
 		return nil, appError.Internal
 	}
-	refreshTokenString, err := refreshToken.SignedString([]byte(cfg.ApiKey))
+	refreshTokenString, err := refreshToken.SignedString([]byte(cfg.Secret.ApiKey))
 	if err != nil {
 		s.log.Error("refresh token signed token string error")
 		return nil, appError.Internal

@@ -2,33 +2,44 @@ package logger
 
 import (
 	"io"
+	logDefault "log"
 	"log/slog"
 	"os"
 )
 
 const (
-	EnvLocal = "local"
-	EnvDev   = "dev"
-	EnvProd  = "prod"
-	EnvTest  = "test"
+	EnvLocal   = "local"
+	EnvDev     = "dev"
+	EnvProd    = "prod"
+	EnvTest    = "test"
+	stdoutPath = "stdout"
 )
 
 var log *slog.Logger
 
-func SetupLogger(env string) *slog.Logger {
+func MustLoad(env string, filePath string) *slog.Logger {
 	if log != nil {
 		return log
 	}
 
+	out := os.Stdout
+	if filePath != "" && filePath != stdoutPath {
+		file, err := os.OpenFile(filePath, os.O_WRONLY, 0666)
+		if err != nil {
+			logDefault.Fatalf("log file does not exist: %s", err)
+		}
+		out = file
+	}
+
 	switch env {
 	case EnvLocal:
-		log = setupLocalLog(os.Stdout)
+		log = setupLocalLog(out)
 	case EnvDev:
-		log = setupDevLog(os.Stdout)
+		log = setupDevLog(out)
 	case EnvProd:
-		log = setupProdLog(os.Stdout)
+		log = setupProdLog(out)
 	case EnvTest:
-		log = setupTestLog(os.Stdout)
+		log = setupTestLog(out)
 	}
 
 	return log
