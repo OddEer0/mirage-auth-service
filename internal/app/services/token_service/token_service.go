@@ -27,8 +27,8 @@ type (
 
 	Service interface {
 		HasByValue(ctx context.Context, refreshToken string) (bool, error)
-		Generate(data JwtUserData) (*JwtTokens, error)
-		ValidateRefreshToken(refreshToken string) (*JwtUserData, error)
+		Generate(ctx context.Context, data JwtUserData) (*JwtTokens, error)
+		ValidateRefreshToken(ctx context.Context, refreshToken string) (*JwtUserData, error)
 		Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*model.JwtToken, error)
 		DeleteByValue(ctx context.Context, value string) error
 	}
@@ -45,7 +45,7 @@ func (s *service) HasByValue(ctx context.Context, refreshToken string) (bool, er
 	panic("implement me")
 }
 
-func (s *service) ValidateRefreshToken(refreshToken string) (*JwtUserData, error) {
+func (s *service) ValidateRefreshToken(ctx context.Context, refreshToken string) (*JwtUserData, error) {
 	//TODO implement me
 	panic("implement me")
 }

@@ -10,6 +10,7 @@ import (
 	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"log/slog"
 	"time"
 )
 
@@ -22,13 +23,13 @@ func (s *service) Create(ctx context.Context, data *appDto.RegistrationData) (*m
 		return nil, err
 	}
 	if candidate {
-		s.log.Error("Has user by current login", "stackTrace", stackTrace.Get(ctx), "Cause", "has candidate")
+		s.log.ErrorContext(ctx, "has user by current login", slog.String("cause", "has candidate"))
 		return nil, domainError.NotFound
 	}
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
 	if err != nil {
-		s.log.Error(err.Error(), "stackTrace", stackTrace.Get(ctx), "Cause", "bcrypt hashed password")
+		s.log.ErrorContext(ctx, "bcrypt hash password error", slog.Any("cause", err))
 		return nil, appError.Internal
 	}
 

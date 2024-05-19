@@ -121,7 +121,7 @@ func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, 
 	var exists bool
 	err := p.db.QueryRow(ctx, hasUserByFieldQuery, "id", id).Scan(&exists)
 	if err != nil {
-		p.log.Error("Error database query", "stack_trace", stackTrace.Get(ctx), "Cause", err.Error())
+		p.log.Error("database query error", slog.Any("cause", err))
 		return false, err
 	}
 	return exists, nil
@@ -133,7 +133,7 @@ func (p *postgresRepository) HasUserByLogin(ctx context.Context, login string) (
 	var exists bool
 	err := p.db.QueryRow(ctx, hasUserByFieldQuery, "login", login).Scan(&exists)
 	if err != nil {
-		p.log.Error("Error database query", "stack_trace", stackTrace.Get(ctx), "Cause", err.Error())
+		p.log.ErrorContext(ctx, "database query error", slog.Any("cause", err))
 		return false, err
 	}
 	return exists, nil
@@ -145,7 +145,7 @@ func (p *postgresRepository) HasUserByEmail(ctx context.Context, email string) (
 	var exists bool
 	err := p.db.QueryRow(ctx, hasUserByFieldQuery, "email", email).Scan(&exists)
 	if err != nil {
-		p.log.Error("Error database query", "stack_trace", stackTrace.Get(ctx), "Cause", err.Error())
+		p.log.Error("Error database query", slog.Any("cause", err))
 		return false, err
 	}
 	return exists, nil
@@ -159,7 +159,7 @@ func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*mod
 	row := p.db.QueryRow(ctx, createUserQuery, data.Id, data.Login, data.Email, data.Password, data.Role, data.IsBanned, data.BanReason, data.UpdatedAt, data.CreatedAt)
 	err := row.Scan(&createdUser.Id, &createdUser.Login, &createdUser.Email, &createdUser.Password, &createdUser.Role, &createdUser.IsBanned, &createdUser.BanReason, &createdUser.UpdatedAt, &createdUser.CreatedAt)
 	if err != nil {
-		p.log.Error("error create new user", "stackTrace:", stackTrace.Get(ctx), "Cause", err.Error())
+		p.log.Error("error create new user", slog.Any("cause", err))
 		return nil, err
 	}
 	return &createdUser, nil
