@@ -4,9 +4,9 @@ import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	appError "github.com/OddEer0/mirage-auth-service/internal/app/app_error"
+	domainConstants "github.com/OddEer0/mirage-auth-service/internal/domain/domain_constants"
 	domainError "github.com/OddEer0/mirage-auth-service/internal/domain/domain_error"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
-	"github.com/OddEer0/mirage-auth-service/internal/shared/constants"
 	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -38,7 +38,7 @@ func (s *service) Create(ctx context.Context, data *appDto.RegistrationData) (*m
 		Login:     data.Login,
 		Email:     data.Email,
 		Password:  string(hashPassword),
-		Role:      constants.User,
+		Role:      domainConstants.RoleUser,
 		IsBanned:  false,
 		BanReason: nil,
 		CreatedAt: time.Now(),

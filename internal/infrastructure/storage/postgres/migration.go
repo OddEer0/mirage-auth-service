@@ -2,8 +2,8 @@ package postgres
 
 import (
 	"context"
+	domainConstants "github.com/OddEer0/mirage-auth-service/internal/domain/domain_constants"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/config"
-	"github.com/OddEer0/mirage-auth-service/internal/shared/constants"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -60,7 +60,7 @@ func InitSuperAdmin(ctx context.Context, conn *pgx.Conn, cfg *config.Config, log
 		INSERT INTO users (id, login, email, password, role, isBanned, banReason, updatedAt, createdAt)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		RETURNING id, login, email;	
-	`, uuid.New().String(), cfg.SuperAdmin.Login, "kostyl@gmail.com", hashPassword, constants.SuperAdmin, false, nil, time.Now(), time.Now())
+	`, uuid.New().String(), cfg.SuperAdmin.Login, "kostyl@gmail.com", hashPassword, domainConstants.RoleSuperAdmin, false, nil, time.Now(), time.Now())
 	if err != nil {
 		return err
 	}
