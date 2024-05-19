@@ -7,6 +7,8 @@ import (
 
 const (
 	ErrNotFoundCode Code = 404
+	ErrConflictCode Code = 409
+
 	ErrInternalCode Code = 500
 )
 

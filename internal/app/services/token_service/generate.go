@@ -2,7 +2,7 @@ package tokenService
 
 import (
 	"context"
-	appError "github.com/OddEer0/mirage-auth-service/internal/app/app_error"
+	"github.com/OddEer0/mirage-auth-service/internal/domain"
 	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
 	"github.com/golang-jwt/jwt"
 	"log/slog"
@@ -17,12 +17,12 @@ func (s *service) Generate(ctx context.Context, data JwtUserData) (*JwtTokens, e
 	accessDuration, err := time.ParseDuration(cfg.Secret.AccessTokenTime)
 	if err != nil {
 		s.log.ErrorContext(ctx, "parse access token duration from cfg error", slog.Any("cause", err))
-		return nil, appError.Internal
+		return nil, domain.NewErr(domain.ErrInternalCode, "internal error")
 	}
 	refreshDuration, err := time.ParseDuration(cfg.Secret.RefreshTokenTime)
 	if err != nil {
 		s.log.ErrorContext(ctx, "parse refresh token duration from cfg error", slog.Any("cause", err))
-		return nil, appError.Internal
+		return nil, domain.NewErr(domain.ErrInternalCode, "internal error")
 	}
 	accessClaims := CustomClaims{
 		JwtUserData:    data,
@@ -37,12 +37,12 @@ func (s *service) Generate(ctx context.Context, data JwtUserData) (*JwtTokens, e
 	accessTokenString, err := accessToken.SignedString([]byte(cfg.Secret.ApiKey))
 	if err != nil {
 		s.log.ErrorContext(ctx, "access token signed token string error", slog.Any("cause", err))
-		return nil, appError.Internal
+		return nil, domain.NewErr(domain.ErrInternalCode, "internal error")
 	}
 	refreshTokenString, err := refreshToken.SignedString([]byte(cfg.Secret.ApiKey))
 	if err != nil {
 		s.log.ErrorContext(ctx, "refresh token signed token string error", slog.Any("cause", err))
-		return nil, appError.Internal
+		return nil, domain.NewErr(domain.ErrInternalCode, "internal error")
 	}
 	return &JwtTokens{
 		AccessToken:  accessTokenString,

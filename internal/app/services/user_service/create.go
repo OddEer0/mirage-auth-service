@@ -3,9 +3,8 @@ package userService
 import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
-	appError "github.com/OddEer0/mirage-auth-service/internal/app/app_error"
+	"github.com/OddEer0/mirage-auth-service/internal/domain"
 	domainConstants "github.com/OddEer0/mirage-auth-service/internal/domain/domain_constants"
-	domainError "github.com/OddEer0/mirage-auth-service/internal/domain/domain_error"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
 	"github.com/google/uuid"
@@ -20,17 +19,18 @@ func (s *service) Create(ctx context.Context, data *appDto.RegistrationData) (*m
 
 	candidate, err := s.userRepository.HasUserByLogin(ctx, data.Login)
 	if err != nil {
+		s.log.ErrorContext(ctx, "error checking user existence", slog.Any("cause", err))
 		return nil, err
 	}
 	if candidate {
-		s.log.ErrorContext(ctx, "has user by current login", slog.String("cause", "has candidate"))
-		return nil, domainError.NotFound
+		s.log.ErrorContext(ctx, "user already exists", slog.String("login", data.Login))
+		return nil, domain.NewErr(domain.ErrConflictCode, "user login exist")
 	}
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
 	if err != nil {
 		s.log.ErrorContext(ctx, "bcrypt hash password error", slog.Any("cause", err))
-		return nil, appError.Internal
+		return nil, domain.NewErr(domain.ErrInternalCode, "internal error")
 	}
 
 	newUser, err := s.userRepository.Create(ctx, &model.User{
@@ -45,6 +45,7 @@ func (s *service) Create(ctx context.Context, data *appDto.RegistrationData) (*m
 		UpdatedAt: time.Now(),
 	})
 	if err != nil {
+		s.log.ErrorContext(ctx, "error creating user", slog.Any("cause", err))
 		return nil, err
 	}
 	return newUser, nil
