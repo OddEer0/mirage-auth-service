@@ -5,7 +5,6 @@ import (
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	tokenService "github.com/OddEer0/mirage-auth-service/internal/app/services/token_service"
 	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
-	"log/slog"
 )
 
 func (u *useCase) Registration(ctx context.Context, data *appDto.RegistrationData) (*AuthResult, error) {
@@ -22,7 +21,6 @@ func (u *useCase) Registration(ctx context.Context, data *appDto.RegistrationDat
 		Role: user.Role,
 	})
 	if err != nil {
-		u.log.ErrorContext(ctx, "generate token error", slog.Any("cause", err))
 		return nil, err
 	}
 

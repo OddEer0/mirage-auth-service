@@ -6,10 +6,15 @@ import (
 )
 
 const (
-	ErrNotFoundCode Code = 404
-	ErrConflictCode Code = 409
+	ErrNotFoundCode       Code = 404
+	ErrRequestTimeoutCode Code = 408
+	ErrConflictCode       Code = 409
 
 	ErrInternalCode Code = 500
+
+	ErrInternalMessage = "Internal error"
+	ErrConflictMessage = "Entity conflict"
+	ErrNotFoundMessage = "Not found"
 )
 
 type Code int
@@ -25,6 +30,7 @@ func (e *Error) Error() string {
 	err.WriteString(strconv.Itoa(int(e.Code)))
 	err.WriteString("message: ")
 	err.WriteString(e.Message)
+
 	return err.String()
 }
 

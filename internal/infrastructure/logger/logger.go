@@ -51,8 +51,8 @@ func setupLocalLog(out io.Writer) *slog.Logger {
 }
 
 func setupDevLog(out io.Writer) *slog.Logger {
-	jsonHandler := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelInfo})
-	return slog.New(jsonHandler)
+	handler := AppLogHandler{slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelInfo})}
+	return slog.New(handler)
 }
 
 func setupProdLog(out io.Writer) *slog.Logger {

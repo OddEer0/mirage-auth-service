@@ -12,12 +12,13 @@ import (
 
 type (
 	JwtTokens struct {
-		AccessToken, RefreshToken string
+		AccessToken  string `json:"access_token"`
+		RefreshToken string `json:"refresh_token"`
 	}
 
 	JwtUserData struct {
-		Id   string
-		Role string
+		Id   string `json:"id"`
+		Role string `json:"role"`
 	}
 
 	CustomClaims struct {

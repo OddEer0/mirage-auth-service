@@ -3,6 +3,7 @@ package grpcv1
 import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
+	errorHandler "github.com/OddEer0/mirage-auth-service/internal/presentation/error_handler"
 	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
 )
 
@@ -13,7 +14,7 @@ func (a *AuthServiceServer) Registration(ctx context.Context, data *authv1.Regis
 		Email:    data.Email,
 	})
 	if err != nil {
-		return nil, err
+		return nil, errorHandler.Catch(err)
 	}
 	banReason := ""
 	if authRes.User.BanReason != nil {

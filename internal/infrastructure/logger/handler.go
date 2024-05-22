@@ -11,10 +11,10 @@ type AppLogHandler struct {
 }
 
 func (a AppLogHandler) Handle(ctx context.Context, r slog.Record) error {
-	if !stackTrace.IsLock(ctx) {
-		r.AddAttrs(slog.String("stack_trace", stackTrace.Get(ctx)))
-	}
 	if r.Level == slog.LevelError {
+		if !stackTrace.IsLock(ctx) {
+			r.AddAttrs(slog.String("stack_trace", stackTrace.Get(ctx)))
+		}
 		stackTrace.Lock(ctx)
 	}
 	return a.Handler.Handle(ctx, r)
