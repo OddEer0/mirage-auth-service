@@ -1,0 +1,5 @@
+{"time":"2024-05-19T03:25:45.066306996+03:00","level":"INFO","msg":"Connect Postgres"}
+{"time":"2024-05-19T03:25:45.067215981+03:00","level":"INFO","msg":"add users table"}
+{"time":"2024-05-19T03:25:45.067624988+03:00","level":"INFO","msg":"add token table"}
+{"time":"2024-05-19T03:25:45.067645918+03:00","level":"INFO","msg":"Success init postgres"}
+{"time":"2024-05-19T03:25:45.069670765+03:00","level":"INFO","msg":"Success add super admin"}

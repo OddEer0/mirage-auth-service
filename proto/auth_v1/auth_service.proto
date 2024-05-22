@@ -1,8 +1,17 @@
 syntax = "proto3";
 package auth_v1;
-option go_package = "github.com/OddEer0/mirage-auth-service/api/auth_v1";
+option go_package = "github.com/OddEer0/mirage-auth-service/proto/auth_v1";
 
 message Empty {}
+
+message ErrorDetail {
+  string message = 1;
+  int32 code = 2;
+}
+
+message Id {
+  string id = 1;
+}
 
 message TokenResponse {
   string value = 1;
@@ -29,6 +38,8 @@ message ResponseUser {
   string login = 2;
   string email = 3;
   string role = 4;
+  bool isBanned = 5;
+  string banReason = 6;
 }
 
 message AuthResponse {
@@ -40,14 +51,7 @@ message Link {
   string link = 1;
 }
 
-message ChangePasswordRequestWithAuth {
-  string id = 1;
-  string oldPassword = 2;
-  string newPassword = 3;
-  string refreshToken = 4;
-}
-
-message ChangePasswordRequestWithoutAuth {
+message ChangePasswordRequest {
   string id = 1;
   string oldPassword = 2;
   string newPassword = 3;
@@ -70,14 +74,53 @@ message AccessToken {
   string accessToken = 1;
 }
 
+message UpdateUserEmail {
+  string id = 1;
+  string email = 2;
+}
+
+message UpdateUserRole {
+  string id = 1;
+  string roleId = 2;
+}
+
+message BanUser {
+  string id = 1;
+  string banReason = 2;
+}
+
+message CheckRoleRequest {
+  string userId = 1;
+  string role = 2;
+}
+
+message PaginationQuery {
+  uint32 count = 1;
+  uint32 currentPage = 2;
+  string orderBy = 3;
+  string orderDirection = 4;
+}
+
+message ManyResponseUser {
+  repeated ResponseUser users = 1;
+  uint32 pageCount = 2;
+}
+
 service AuthService {
   rpc registration(RegistrationRequest) returns (AuthResponse) {}
   rpc login(LoginRequest) returns (AuthResponse) {}
   rpc refresh(RefreshToken) returns (AuthResponse) {}
   rpc logout(RefreshToken) returns (Empty) {}
   rpc linkActivate(Link) returns (Empty) {}
-  rpc changePasswordWithAuth(ChangePasswordRequestWithAuth) returns (Empty) {}
-  rpc changePasswordWithoutAuth(ChangePasswordRequestWithoutAuth) returns (Empty) {}
+  rpc changePassword(ChangePasswordRequest) returns (Empty) {}
   rpc checkAuth(AccessToken) returns (JwtUser) {}
+  rpc checkRole(CheckRoleRequest) returns (ResponseUser) {}
   rpc confirmChangePassword(Link) returns (Empty) {}
+  rpc getUserById(Id) returns(ResponseUser) {}
+  rpc getUsersByQuery(PaginationQuery) returns(ManyResponseUser) {}
+  rpc updateUserEmail(UpdateUserEmail) returns(ResponseUser) {}
+  rpc updateUserRole(UpdateUserRole) returns(ResponseUser) {}
+  rpc deleteUserById(Id) returns(Empty) {}
+  rpc banUser(BanUser) returns(ResponseUser) {}
+  rpc unbanUser(Id) returns(ResponseUser) {}
 }
