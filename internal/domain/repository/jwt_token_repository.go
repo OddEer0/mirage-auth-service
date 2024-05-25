@@ -12,4 +12,5 @@ type JwtTokenRepository interface {
 	Save(ctx context.Context, id, token string) (*model.JwtToken, error)
 	GetById(ctx context.Context, id string) (*model.JwtToken, error)
 	HasById(ctx context.Context, id string) (bool, error)
+	HasByValue(ctx context.Context, token string) (bool, error)
 }
