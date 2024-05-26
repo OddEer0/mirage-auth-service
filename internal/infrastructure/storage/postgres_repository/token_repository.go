@@ -145,8 +145,7 @@ func (t tokenRepository) HasById(ctx context.Context, id string) (bool, error) {
 	err := t.db.QueryRow(ctx, hasTokenById, id).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			t.log.ErrorContext(ctx, "token not found", slog.Any("cause", err), slog.String("id", id))
-			return exists, ErrTokenNotFound
+			return exists, nil
 		}
 		t.log.ErrorContext(ctx, "HasTokenById query error", slog.Any("cause", err), slog.String("id", id))
 		return exists, ErrInternal
@@ -163,8 +162,7 @@ func (t tokenRepository) HasByValue(ctx context.Context, token string) (bool, er
 	err := t.db.QueryRow(ctx, hasTokenByValue, token).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			t.log.ErrorContext(ctx, "token not found", slog.Any("cause", err), slog.String("token", token))
-			return exists, ErrTokenNotFound
+			return exists, nil
 		}
 		t.log.ErrorContext(ctx, "HasTokenById query error", slog.Any("cause", err), slog.String("token", token))
 		return exists, ErrInternal

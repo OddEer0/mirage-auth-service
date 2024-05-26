@@ -103,10 +103,10 @@ func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			p.log.ErrorContext(ctx, "not found users by query", slog.Any("cause", err), "query", query)
-			return nil, 0, domain.NewErr(domain.ErrNotFoundCode, domain.ErrNotFoundMessage)
+			return nil, 0, ErrUserNotFound
 		}
 		p.log.ErrorContext(ctx, "db query error", slog.Any("cause", err), "query", query)
-		return nil, 0, domain.NewErr(domain.ErrInternalCode, domain.ErrInternalMessage)
+		return nil, 0, ErrInternal
 	}
 
 	users := make([]*model.User, 0, limit)
@@ -115,14 +115,14 @@ func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.
 		err := rows.Scan(&data.Id, &data.Login, &data.Email, &data.Password, &data.Role, &data.IsBanned, &data.BanReason, &data.UpdatedAt, &data.CreatedAt)
 		if err != nil {
 			p.log.ErrorContext(ctx, "rows scan error", slog.Any("cause", err), "query", query)
-			return nil, 0, err
+			return nil, 0, ErrInternal
 		}
 		users = append(users, &data)
 	}
 
 	if err = rows.Err(); err != nil {
 		p.log.ErrorContext(ctx, "rows error", slog.Any("cause", err))
-		return nil, 0, err
+		return nil, 0, ErrInternal
 	}
 
 	return users, pageCount, nil
@@ -310,11 +310,10 @@ func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, 
 	err := p.db.QueryRow(ctx, hasUserByIdQuery, id).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			p.log.ErrorContext(ctx, "Error user by id not found", slog.Any("cause", err), slog.String("id", id))
-			return false, domain.NewErr(domain.ErrNotFoundCode, domain.ErrInternalMessage)
+			return exists, nil
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("id", id))
-		return false, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+		return exists, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
 	}
 	return exists, nil
 }
@@ -326,11 +325,10 @@ func (p *postgresRepository) HasUserByLogin(ctx context.Context, login string) (
 	err := p.db.QueryRow(ctx, hasUserByLoginQuery, login).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			p.log.ErrorContext(ctx, "Error user by login not found", slog.Any("cause", err), slog.String("login", login))
-			return false, domain.NewErr(domain.ErrNotFoundCode, domain.ErrInternalMessage)
+			return exists, nil
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("login", login))
-		return false, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+		return exists, ErrInternal
 	}
 	return exists, nil
 }
@@ -343,11 +341,10 @@ func (p *postgresRepository) HasUserByEmail(ctx context.Context, email string) (
 	err := p.db.QueryRow(ctx, hasUserByEmailQuery, "email", email).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			p.log.ErrorContext(ctx, "Error user by email not found", slog.Any("cause", err), slog.String("email", email))
-			return false, domain.NewErr(domain.ErrNotFoundCode, domain.ErrInternalMessage)
+			return exists, nil
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("email", email))
-		return false, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+		return exists, ErrInternal
 	}
 	return exists, nil
 }
@@ -382,7 +379,7 @@ func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*mod
 	)
 	if err != nil {
 		p.log.ErrorContext(ctx, "error create new user", slog.Any("cause", err))
-		return nil, domain.NewErr(domain.ErrInternalCode, domain.ErrInternalMessage)
+		return nil, ErrInternal
 	}
 	return &createdUser, nil
 }
