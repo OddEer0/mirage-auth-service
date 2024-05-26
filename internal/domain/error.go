@@ -6,15 +6,17 @@ import (
 )
 
 const (
+	ErrUnauthorizedCode   Code = 401
 	ErrNotFoundCode       Code = 404
 	ErrRequestTimeoutCode Code = 408
 	ErrConflictCode       Code = 409
 
 	ErrInternalCode Code = 500
 
-	ErrInternalMessage = "Internal error"
-	ErrConflictMessage = "Entity conflict"
-	ErrNotFoundMessage = "Not found"
+	ErrUnauthorizedMessage = "Unauthorized"
+	ErrInternalMessage     = "Internal error"
+	ErrConflictMessage     = "Entity conflict"
+	ErrNotFoundMessage     = "Not found"
 )
 
 type Code int
