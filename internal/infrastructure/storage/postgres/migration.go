@@ -28,10 +28,23 @@ func InitMigration(ctx context.Context, conn *pgx.Conn, log *slog.Logger) error 
 
 	if _, err := conn.Exec(ctx, `CREATE TABLE IF NOT EXISTS tokens (
 		id UUID PRIMARY KEY REFERENCES users(id),
-    	value VARCHAR(255) NOT NULL
+    	value VARCHAR(255) NOT NULL,
+    	updatedAt DATE NOT NULL,
+		createdAt DATE NOT NULL
 	)`); err != nil {
 		return err
 	}
+
+	if _, err := conn.Exec(ctx, `CREATE TABLE IF NOT EXISTS user_activate (
+		id UUID PRIMARY KEY REFERENCES users(id),
+    	isActivate BOOLEAN NOT NULL,
+    	link VARCHAR(255) NOT NULL,
+    	updatedAt DATE NOT NULL,
+		createdAt DATE NOT NULL
+	)`); err != nil {
+		return err
+	}
+
 	log.Info("success init migration")
 
 	return nil

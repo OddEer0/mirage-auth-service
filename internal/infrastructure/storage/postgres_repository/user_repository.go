@@ -24,16 +24,36 @@ const (
 		WHERE id = $1;
 	`
 	hasUserByLoginQuery = `
-		SELECT EXISTS(SELECT 1 FROM users WHERE login = $1)
+		SELECT EXISTS(SELECT 1 FROM users WHERE login = $1);
 	`
 	hasUserByIdQuery = `
-		SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)
+		SELECT EXISTS(SELECT 1 FROM users WHERE id = $1);
 	`
 	hasUserByEmailQuery = `
-		SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)
+		SELECT EXISTS(SELECT 1 FROM users WHERE email = $1);
 	`
 	deleteUserById = `
-		DELETE FROM users WHERE id = $1
+		DELETE FROM users WHERE id = $1;
+	`
+	updateUserById = `
+		UPDATE users SET login = $2, email = $3, password = $4, role = $5, isBanned = $6, banReason = $7, updatedAt = $8
+		WHERE id = $1
+		RETURNING id, login, email, password, role, isBanned, banReason, updatedAt, createdAt;
+	`
+	updateUserRoleById = `
+		UPDATE users SET role = $2
+		WHERE id = $1
+		RETURNING id, login, email, password, role, isBanned, banReason, updatedAt, createdAt;
+	`
+	updateUserPasswordById = `
+		UPDATE users SET password = $2
+		WHERE id = $1
+		RETURNING id, login, email, password, role, isBanned, banReason, updatedAt, createdAt;
+	`
+	updateUserBanById = `
+		UPDATE users SET isBanned = $2, banReason = $3
+		WHERE id = $1
+		RETURNING id, login, email, password, role, isBanned, banReason, updatedAt, createdAt;
 	`
 )
 
@@ -61,7 +81,7 @@ func (p *postgresRepository) GetById(ctx context.Context, id string) (*model.Use
 }
 
 func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*model.User, uint, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: GetById")
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: GetByQuery")
 	defer stackTrace.Done(ctx)
 
 	offset := query.PaginationQuery.PageCount * (query.PaginationQuery.CurrentPage - 1)
@@ -83,10 +103,10 @@ func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			p.log.ErrorContext(ctx, "not found users by query", slog.Any("cause", err), "query", query)
-			return nil, 0, domain.NewErr(domain.ErrNotFoundCode, domain.ErrNotFoundMessage)
+			return nil, 0, ErrUserNotFound
 		}
 		p.log.ErrorContext(ctx, "db query error", slog.Any("cause", err), "query", query)
-		return nil, 0, domain.NewErr(domain.ErrInternalCode, domain.ErrInternalMessage)
+		return nil, 0, ErrInternal
 	}
 
 	users := make([]*model.User, 0, limit)
@@ -95,46 +115,191 @@ func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.
 		err := rows.Scan(&data.Id, &data.Login, &data.Email, &data.Password, &data.Role, &data.IsBanned, &data.BanReason, &data.UpdatedAt, &data.CreatedAt)
 		if err != nil {
 			p.log.ErrorContext(ctx, "rows scan error", slog.Any("cause", err), "query", query)
-			return nil, 0, err
+			return nil, 0, ErrInternal
 		}
 		users = append(users, &data)
 	}
 
 	if err = rows.Err(); err != nil {
 		p.log.ErrorContext(ctx, "rows error", slog.Any("cause", err))
-		return nil, 0, err
+		return nil, 0, ErrInternal
 	}
 
 	return users, pageCount, nil
 }
 
 func (p *postgresRepository) Delete(ctx context.Context, id string) error {
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: Delete")
+	defer stackTrace.Done(ctx)
+
+	has, err := p.HasUserById(ctx, id)
+	if err != nil {
+		p.log.ErrorContext(ctx, "Has user by id method error", slog.Any("cause", err), slog.String("id", id))
+		return ErrInternal
+	}
+	if !has {
+		p.log.ErrorContext(ctx, "User not found", slog.Any("cause", err), slog.String("id", id))
+		return ErrUserNotFound
+	}
+
+	_, err = p.db.Exec(ctx, deleteUserById, id)
+	if err != nil {
+		p.log.ErrorContext(ctx, "Delete query error", slog.Any("cause", err), slog.String("id", id))
+		return ErrInternal
+	}
+
 	return nil
 }
 
-func (p *postgresRepository) UpdateById(ctx context.Context, user *model.CreateUser) (*model.User, error) {
-	//TODO implement me
-	panic("implement me")
+func (p *postgresRepository) UpdateById(ctx context.Context, user *model.User) (*model.User, error) {
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: UpdateById")
+	defer stackTrace.Done(ctx)
+
+	row := p.db.QueryRow(ctx, updateUserById, user.Id, user.Login, user.Email, user.Password, user.Role, user.IsBanned, user.BanReason, user.UpdatedAt)
+	updatedUser := &model.User{}
+	err := row.Scan(
+		&updatedUser.Id,
+		&updatedUser.Login,
+		&updatedUser.Email,
+		&updatedUser.Password,
+		&updatedUser.Role,
+		&updatedUser.IsBanned,
+		&updatedUser.BanReason,
+		&updatedUser.UpdatedAt,
+		&updatedUser.CreatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			p.log.ErrorContext(ctx, "user not found", slog.Any("cause", err), slog.String("id", user.Id))
+			return nil, ErrUserNotFound
+		}
+		p.log.ErrorContext(ctx, "update query and scan error", slog.Any("cause", err), "update_data", user)
+		return nil, ErrInternal
+	}
+
+	return updatedUser, nil
 }
 
 func (p *postgresRepository) UpdateRoleById(ctx context.Context, id string, role string) (*model.User, error) {
-	//TODO implement me
-	panic("implement me")
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: UpdateRoleById")
+	defer stackTrace.Done(ctx)
+
+	row := p.db.QueryRow(ctx, updateUserRoleById, id, role)
+	updatedUser := &model.User{}
+	err := row.Scan(
+		&updatedUser.Id,
+		&updatedUser.Login,
+		&updatedUser.Email,
+		&updatedUser.Password,
+		&updatedUser.Role,
+		&updatedUser.IsBanned,
+		&updatedUser.BanReason,
+		&updatedUser.UpdatedAt,
+		&updatedUser.CreatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			p.log.ErrorContext(ctx, "user not found", slog.Any("cause", err), slog.String("id", id), slog.String("role", role))
+			return nil, ErrUserNotFound
+		}
+		p.log.ErrorContext(ctx, "update role query and scan error", slog.Any("cause", err), slog.String("id", id), slog.String("role", role))
+		return nil, ErrInternal
+	}
+
+	return updatedUser, nil
 }
 
 func (p *postgresRepository) UpdatePasswordById(ctx context.Context, id string, password string) (*model.User, error) {
-	//TODO implement me
-	panic("implement me")
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: UpdatePasswordById")
+	defer stackTrace.Done(ctx)
+
+	row := p.db.QueryRow(ctx, updateUserPasswordById, id, password)
+	updatedUser := &model.User{}
+	err := row.Scan(
+		&updatedUser.Id,
+		&updatedUser.Login,
+		&updatedUser.Email,
+		&updatedUser.Password,
+		&updatedUser.Role,
+		&updatedUser.IsBanned,
+		&updatedUser.BanReason,
+		&updatedUser.UpdatedAt,
+		&updatedUser.CreatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			p.log.ErrorContext(ctx, "user not found", slog.Any("cause", err), slog.String("id", id))
+			return nil, ErrUserNotFound
+		}
+		p.log.ErrorContext(ctx, "update password query and scan error", slog.Any("cause", err), slog.String("id", id))
+		return nil, ErrInternal
+	}
+
+	return updatedUser, nil
 }
 
 func (p *postgresRepository) BanUserById(ctx context.Context, id string, banReason string) (*model.User, error) {
-	//TODO implement me
-	panic("implement me")
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: BanUserById")
+	defer stackTrace.Done(ctx)
+
+	row := p.db.QueryRow(ctx, updateUserBanById, id, true, banReason)
+	updatedUser := &model.User{}
+	err := row.Scan(
+		&updatedUser.Id,
+		&updatedUser.Login,
+		&updatedUser.Email,
+		&updatedUser.Password,
+		&updatedUser.Role,
+		&updatedUser.IsBanned,
+		&updatedUser.BanReason,
+		&updatedUser.UpdatedAt,
+		&updatedUser.CreatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			p.log.ErrorContext(ctx, "user not found", slog.Any("cause", err), slog.String("id", id), slog.String("ban_reason", banReason))
+			return nil, ErrUserNotFound
+		}
+		p.log.ErrorContext(ctx, "ban user query and scan error", slog.Any("cause", err), slog.String("id", id), slog.String("ban_reason", banReason))
+		return nil, ErrInternal
+	}
+
+	return updatedUser, nil
+
 }
 
 func (p *postgresRepository) UnbanUserById(ctx context.Context, id string) (*model.User, error) {
-	//TODO implement me
-	panic("implement me")
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: UnbanUserById")
+	defer stackTrace.Done(ctx)
+
+	row := p.db.QueryRow(ctx, updateUserBanById, id, false, nil)
+	updatedUser := &model.User{}
+	err := row.Scan(
+		&updatedUser.Id,
+		&updatedUser.Login,
+		&updatedUser.Email,
+		&updatedUser.Password,
+		&updatedUser.Role,
+		&updatedUser.IsBanned,
+		&updatedUser.BanReason,
+		&updatedUser.UpdatedAt,
+		&updatedUser.CreatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			p.log.ErrorContext(ctx, "user not found", slog.Any("cause", err), slog.String("id", id))
+			return nil, ErrUserNotFound
+		}
+		p.log.ErrorContext(ctx, "unban user query and scan error", slog.Any("cause", err), slog.String("id", id))
+		return nil, ErrInternal
+	}
+
+	return updatedUser, nil
 }
 
 func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, error) {
@@ -145,11 +310,10 @@ func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, 
 	err := p.db.QueryRow(ctx, hasUserByIdQuery, id).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			p.log.ErrorContext(ctx, "Error user by id not found", slog.Any("cause", err), slog.String("id", id))
-			return false, domain.NewErr(domain.ErrNotFoundCode, domain.ErrInternalMessage)
+			return exists, nil
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("id", id))
-		return false, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+		return exists, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
 	}
 	return exists, nil
 }
@@ -161,11 +325,10 @@ func (p *postgresRepository) HasUserByLogin(ctx context.Context, login string) (
 	err := p.db.QueryRow(ctx, hasUserByLoginQuery, login).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			p.log.ErrorContext(ctx, "Error user by login not found", slog.Any("cause", err), slog.String("login", login))
-			return false, domain.NewErr(domain.ErrNotFoundCode, domain.ErrInternalMessage)
+			return exists, nil
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("login", login))
-		return false, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+		return exists, ErrInternal
 	}
 	return exists, nil
 }
@@ -178,11 +341,10 @@ func (p *postgresRepository) HasUserByEmail(ctx context.Context, email string) (
 	err := p.db.QueryRow(ctx, hasUserByEmailQuery, "email", email).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			p.log.ErrorContext(ctx, "Error user by email not found", slog.Any("cause", err), slog.String("email", email))
-			return false, domain.NewErr(domain.ErrNotFoundCode, domain.ErrInternalMessage)
+			return exists, nil
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("email", email))
-		return false, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+		return exists, ErrInternal
 	}
 	return exists, nil
 }
@@ -217,7 +379,7 @@ func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*mod
 	)
 	if err != nil {
 		p.log.ErrorContext(ctx, "error create new user", slog.Any("cause", err))
-		return nil, domain.NewErr(domain.ErrInternalCode, domain.ErrInternalMessage)
+		return nil, ErrInternal
 	}
 	return &createdUser, nil
 }
