@@ -23,6 +23,10 @@ const (
 		SELECT id, login, email, password, role, isBanned, banReason, updatedAt, createdAt FROM users
 		WHERE id = $1;
 	`
+	getUserByLoginQuery = `
+		SELECT id, login, email, password, role, isBanned, banReason, updatedAt, createdAt FROM users
+		WHERE login = $1;
+	`
 	hasUserByLoginQuery = `
 		SELECT EXISTS(SELECT 1 FROM users WHERE login = $1);
 	`
@@ -60,6 +64,24 @@ const (
 type postgresRepository struct {
 	log *slog.Logger
 	db  *pgx.Conn
+}
+
+func (p *postgresRepository) GetByLogin(ctx context.Context, login string) (*model.User, error) {
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: GetByLogin")
+	defer stackTrace.Done(ctx)
+
+	row := p.db.QueryRow(ctx, getUserByLoginQuery, login)
+	var user model.User
+	err := row.Scan(&user.Id, &user.Login, &user.Email, &user.Password, &user.Role, &user.IsBanned, &user.BanReason, &user.UpdatedAt, &user.CreatedAt)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			p.log.ErrorContext(ctx, "not found user by id", slog.Any("cause", err), slog.String("login", login))
+			return nil, ErrUserNotFound
+		}
+		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("login", login))
+		return nil, ErrInternal
+	}
+	return &user, nil
 }
 
 func (p *postgresRepository) GetById(ctx context.Context, id string) (*model.User, error) {
