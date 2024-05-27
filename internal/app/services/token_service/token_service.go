@@ -41,11 +41,6 @@ type (
 	}
 )
 
-func (s *service) DeleteByValue(ctx context.Context, value string) error {
-	//TODO implement me
-	panic("implement me")
-}
-
 func New(logger *slog.Logger, cfg *config.Config, tokenRepo repository.JwtTokenRepository) Service {
 	return &service{
 		log:             logger,
