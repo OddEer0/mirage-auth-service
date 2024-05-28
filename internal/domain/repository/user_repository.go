@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) (*model.User, error)
 	GetById(ctx context.Context, id string) (*model.User, error)
+	GetByLogin(ctx context.Context, login string) (*model.User, error)
 	GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*model.User, uint, error)
 	Delete(ctx context.Context, id string) error
 	UpdateById(ctx context.Context, user *model.User) (*model.User, error)

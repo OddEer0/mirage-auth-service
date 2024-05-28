@@ -17,6 +17,8 @@ type (
 	}
 
 	LoginData struct {
+		Login    string
+		Password string
 	}
 
 	SaveTokenServiceDto struct {

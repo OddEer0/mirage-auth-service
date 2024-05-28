@@ -41,26 +41,6 @@ type (
 	}
 )
 
-func (s *service) HasByValue(ctx context.Context, refreshToken string) (bool, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *service) ValidateRefreshToken(ctx context.Context, refreshToken string) (*JwtUserData, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *service) Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*model.JwtToken, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *service) DeleteByValue(ctx context.Context, value string) error {
-	//TODO implement me
-	panic("implement me")
-}
-
 func New(logger *slog.Logger, cfg *config.Config, tokenRepo repository.JwtTokenRepository) Service {
 	return &service{
 		log:             logger,

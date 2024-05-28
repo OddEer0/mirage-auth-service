@@ -19,7 +19,10 @@ const (
 		RETURNING id, value, updatedAt, createdAt;
 	`
 	deleteTokenQuery = `
-		DELETE FROM tokens WHERE id = $1
+		DELETE FROM tokens WHERE id = $1;
+	`
+	deleteTokenByValueQuery = `
+		DELETE FROM tokens WHERE value = $1;
 	`
 	updateTokenQuery = `
 		UPDATE tokens SET value = $2, updatedAt = $3 WHERE id = $1
@@ -40,6 +43,23 @@ const (
 type tokenRepository struct {
 	log *slog.Logger
 	db  *pgx.Conn
+}
+
+func (t tokenRepository) DeleteByValue(ctx context.Context, value string) error {
+	stackTrace.Add(ctx, "package: postgresRepository, type: structRepository, method: DeleteByValue")
+	defer stackTrace.Done(ctx)
+
+	_, err := t.db.Exec(ctx, deleteTokenByValueQuery, value)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			t.log.ErrorContext(ctx, "token not found", slog.Any("cause", err), slog.String("token", value))
+			return ErrTokenNotFound
+		}
+		t.log.ErrorContext(ctx, "delete token by value query error", slog.Any("cause", err), slog.String("token", value))
+		return ErrInternal
+	}
+
+	return nil
 }
 
 func (t tokenRepository) Create(ctx context.Context, id, token string) (*model.JwtToken, error) {
