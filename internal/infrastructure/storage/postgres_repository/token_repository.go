@@ -49,7 +49,7 @@ func (t tokenRepository) DeleteByValue(ctx context.Context, value string) error 
 	stackTrace.Add(ctx, "package: postgresRepository, type: structRepository, method: DeleteByValue")
 	defer stackTrace.Done(ctx)
 
-	_, err := t.db.Exec(ctx, deleteTokenQuery, value)
+	_, err := t.db.Exec(ctx, deleteTokenByValueQuery, value)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			t.log.ErrorContext(ctx, "token not found", slog.Any("cause", err), slog.String("token", value))

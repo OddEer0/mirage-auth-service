@@ -23,6 +23,10 @@ func (u *useCase) Registration(ctx context.Context, data *appDto.RegistrationDat
 	if err != nil {
 		return nil, err
 	}
+	_, err = u.tokenService.Save(ctx, appDto.SaveTokenServiceDto{Id: user.Id, RefreshToken: tokens.RefreshToken})
+	if err != nil {
+		return nil, err
+	}
 
 	return &AuthResult{User: &appDto.PureUser{
 		Id:        user.Id,

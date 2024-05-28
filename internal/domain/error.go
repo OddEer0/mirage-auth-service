@@ -7,6 +7,7 @@ import (
 
 const (
 	ErrUnauthorizedCode   Code = 401
+	ErrForbiddenCode      Code = 403
 	ErrNotFoundCode       Code = 404
 	ErrRequestTimeoutCode Code = 408
 	ErrConflictCode       Code = 409
@@ -14,6 +15,7 @@ const (
 	ErrInternalCode Code = 500
 
 	ErrUnauthorizedMessage = "Unauthorized"
+	ErrForbiddenMessage    = "Forbidden"
 	ErrInternalMessage     = "Internal error"
 	ErrConflictMessage     = "Entity conflict"
 	ErrNotFoundMessage     = "Not found"
