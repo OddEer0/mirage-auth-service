@@ -24,7 +24,7 @@ func New(cfg *config.Config, log *slog.Logger, db *pgx.Conn) *Dependencies {
 	// postgres Repository initialize
 	pgUserRepo := postgresRepository.NewUserRepository(log, db)
 	pgJwtTokenRepo := postgresRepository.NewTokenRepository(log, db)
-	pgUserActivateRepo := postgresRepository.NewUserActivateRepository()
+	pgUserActivateRepo := postgresRepository.NewUserActivateRepository(log, db)
 
 	// app services initialize
 	userServ := userService.New(log, pgUserRepo)

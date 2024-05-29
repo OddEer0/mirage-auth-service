@@ -176,6 +176,9 @@ func (u *userActivateRepository) HasById(ctx context.Context, userId string) (bo
 	return exists, nil
 }
 
-func NewUserActivateRepository() repository.UserActivateRepository {
-	return &userActivateRepository{}
+func NewUserActivateRepository(log *slog.Logger, db *pgx.Conn) repository.UserActivateRepository {
+	return &userActivateRepository{
+		log: log,
+		db:  db,
+	}
 }
