@@ -19,22 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AuthService_Registration_FullMethodName          = "/auth_v1.AuthService/registration"
-	AuthService_Login_FullMethodName                 = "/auth_v1.AuthService/login"
-	AuthService_Refresh_FullMethodName               = "/auth_v1.AuthService/refresh"
-	AuthService_Logout_FullMethodName                = "/auth_v1.AuthService/logout"
-	AuthService_LinkActivate_FullMethodName          = "/auth_v1.AuthService/linkActivate"
-	AuthService_ChangePassword_FullMethodName        = "/auth_v1.AuthService/changePassword"
-	AuthService_CheckAuth_FullMethodName             = "/auth_v1.AuthService/checkAuth"
-	AuthService_CheckRole_FullMethodName             = "/auth_v1.AuthService/checkRole"
-	AuthService_ConfirmChangePassword_FullMethodName = "/auth_v1.AuthService/confirmChangePassword"
-	AuthService_GetUserById_FullMethodName           = "/auth_v1.AuthService/getUserById"
-	AuthService_GetUsersByQuery_FullMethodName       = "/auth_v1.AuthService/getUsersByQuery"
-	AuthService_UpdateUserEmail_FullMethodName       = "/auth_v1.AuthService/updateUserEmail"
-	AuthService_UpdateUserRole_FullMethodName        = "/auth_v1.AuthService/updateUserRole"
-	AuthService_DeleteUserById_FullMethodName        = "/auth_v1.AuthService/deleteUserById"
-	AuthService_BanUser_FullMethodName               = "/auth_v1.AuthService/banUser"
-	AuthService_UnbanUser_FullMethodName             = "/auth_v1.AuthService/unbanUser"
+	AuthService_Registration_FullMethodName = "/auth_v1.AuthService/registration"
+	AuthService_Login_FullMethodName        = "/auth_v1.AuthService/login"
+	AuthService_Refresh_FullMethodName      = "/auth_v1.AuthService/refresh"
+	AuthService_Logout_FullMethodName       = "/auth_v1.AuthService/logout"
+	AuthService_CheckAuth_FullMethodName    = "/auth_v1.AuthService/checkAuth"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -45,18 +34,7 @@ type AuthServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	Refresh(ctx context.Context, in *RefreshToken, opts ...grpc.CallOption) (*AuthResponse, error)
 	Logout(ctx context.Context, in *RefreshToken, opts ...grpc.CallOption) (*Empty, error)
-	LinkActivate(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error)
-	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*Empty, error)
 	CheckAuth(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*JwtUser, error)
-	CheckRole(ctx context.Context, in *CheckRoleRequest, opts ...grpc.CallOption) (*ResponseUser, error)
-	ConfirmChangePassword(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error)
-	GetUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*ResponseUser, error)
-	GetUsersByQuery(ctx context.Context, in *PaginationQuery, opts ...grpc.CallOption) (*ManyResponseUser, error)
-	UpdateUserEmail(ctx context.Context, in *UpdateUserEmail, opts ...grpc.CallOption) (*ResponseUser, error)
-	UpdateUserRole(ctx context.Context, in *UpdateUserRole, opts ...grpc.CallOption) (*ResponseUser, error)
-	DeleteUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error)
-	BanUser(ctx context.Context, in *BanUser, opts ...grpc.CallOption) (*ResponseUser, error)
-	UnbanUser(ctx context.Context, in *Id, opts ...grpc.CallOption) (*ResponseUser, error)
 }
 
 type authServiceClient struct {
@@ -103,108 +81,9 @@ func (c *authServiceClient) Logout(ctx context.Context, in *RefreshToken, opts .
 	return out, nil
 }
 
-func (c *authServiceClient) LinkActivate(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, AuthService_LinkActivate_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, AuthService_ChangePassword_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *authServiceClient) CheckAuth(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*JwtUser, error) {
 	out := new(JwtUser)
 	err := c.cc.Invoke(ctx, AuthService_CheckAuth_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) CheckRole(ctx context.Context, in *CheckRoleRequest, opts ...grpc.CallOption) (*ResponseUser, error) {
-	out := new(ResponseUser)
-	err := c.cc.Invoke(ctx, AuthService_CheckRole_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) ConfirmChangePassword(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, AuthService_ConfirmChangePassword_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) GetUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*ResponseUser, error) {
-	out := new(ResponseUser)
-	err := c.cc.Invoke(ctx, AuthService_GetUserById_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) GetUsersByQuery(ctx context.Context, in *PaginationQuery, opts ...grpc.CallOption) (*ManyResponseUser, error) {
-	out := new(ManyResponseUser)
-	err := c.cc.Invoke(ctx, AuthService_GetUsersByQuery_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) UpdateUserEmail(ctx context.Context, in *UpdateUserEmail, opts ...grpc.CallOption) (*ResponseUser, error) {
-	out := new(ResponseUser)
-	err := c.cc.Invoke(ctx, AuthService_UpdateUserEmail_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) UpdateUserRole(ctx context.Context, in *UpdateUserRole, opts ...grpc.CallOption) (*ResponseUser, error) {
-	out := new(ResponseUser)
-	err := c.cc.Invoke(ctx, AuthService_UpdateUserRole_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) DeleteUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, AuthService_DeleteUserById_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) BanUser(ctx context.Context, in *BanUser, opts ...grpc.CallOption) (*ResponseUser, error) {
-	out := new(ResponseUser)
-	err := c.cc.Invoke(ctx, AuthService_BanUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) UnbanUser(ctx context.Context, in *Id, opts ...grpc.CallOption) (*ResponseUser, error) {
-	out := new(ResponseUser)
-	err := c.cc.Invoke(ctx, AuthService_UnbanUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -219,18 +98,7 @@ type AuthServiceServer interface {
 	Login(context.Context, *LoginRequest) (*AuthResponse, error)
 	Refresh(context.Context, *RefreshToken) (*AuthResponse, error)
 	Logout(context.Context, *RefreshToken) (*Empty, error)
-	LinkActivate(context.Context, *Link) (*Empty, error)
-	ChangePassword(context.Context, *ChangePasswordRequest) (*Empty, error)
 	CheckAuth(context.Context, *AccessToken) (*JwtUser, error)
-	CheckRole(context.Context, *CheckRoleRequest) (*ResponseUser, error)
-	ConfirmChangePassword(context.Context, *Link) (*Empty, error)
-	GetUserById(context.Context, *Id) (*ResponseUser, error)
-	GetUsersByQuery(context.Context, *PaginationQuery) (*ManyResponseUser, error)
-	UpdateUserEmail(context.Context, *UpdateUserEmail) (*ResponseUser, error)
-	UpdateUserRole(context.Context, *UpdateUserRole) (*ResponseUser, error)
-	DeleteUserById(context.Context, *Id) (*Empty, error)
-	BanUser(context.Context, *BanUser) (*ResponseUser, error)
-	UnbanUser(context.Context, *Id) (*ResponseUser, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -250,41 +118,8 @@ func (UnimplementedAuthServiceServer) Refresh(context.Context, *RefreshToken) (*
 func (UnimplementedAuthServiceServer) Logout(context.Context, *RefreshToken) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
 }
-func (UnimplementedAuthServiceServer) LinkActivate(context.Context, *Link) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LinkActivate not implemented")
-}
-func (UnimplementedAuthServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
-}
 func (UnimplementedAuthServiceServer) CheckAuth(context.Context, *AccessToken) (*JwtUser, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckAuth not implemented")
-}
-func (UnimplementedAuthServiceServer) CheckRole(context.Context, *CheckRoleRequest) (*ResponseUser, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckRole not implemented")
-}
-func (UnimplementedAuthServiceServer) ConfirmChangePassword(context.Context, *Link) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConfirmChangePassword not implemented")
-}
-func (UnimplementedAuthServiceServer) GetUserById(context.Context, *Id) (*ResponseUser, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
-}
-func (UnimplementedAuthServiceServer) GetUsersByQuery(context.Context, *PaginationQuery) (*ManyResponseUser, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUsersByQuery not implemented")
-}
-func (UnimplementedAuthServiceServer) UpdateUserEmail(context.Context, *UpdateUserEmail) (*ResponseUser, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserEmail not implemented")
-}
-func (UnimplementedAuthServiceServer) UpdateUserRole(context.Context, *UpdateUserRole) (*ResponseUser, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserRole not implemented")
-}
-func (UnimplementedAuthServiceServer) DeleteUserById(context.Context, *Id) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserById not implemented")
-}
-func (UnimplementedAuthServiceServer) BanUser(context.Context, *BanUser) (*ResponseUser, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BanUser not implemented")
-}
-func (UnimplementedAuthServiceServer) UnbanUser(context.Context, *Id) (*ResponseUser, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnbanUser not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -371,42 +206,6 @@ func _AuthService_Logout_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_LinkActivate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Link)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).LinkActivate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_LinkActivate_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).LinkActivate(ctx, req.(*Link))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChangePasswordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).ChangePassword(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_ChangePassword_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _AuthService_CheckAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccessToken)
 	if err := dec(in); err != nil {
@@ -421,168 +220,6 @@ func _AuthService_CheckAuth_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).CheckAuth(ctx, req.(*AccessToken))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_CheckRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CheckRoleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).CheckRole(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_CheckRole_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).CheckRole(ctx, req.(*CheckRoleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_ConfirmChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Link)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).ConfirmChangePassword(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_ConfirmChangePassword_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).ConfirmChangePassword(ctx, req.(*Link))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).GetUserById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_GetUserById_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).GetUserById(ctx, req.(*Id))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_GetUsersByQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PaginationQuery)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).GetUsersByQuery(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_GetUsersByQuery_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).GetUsersByQuery(ctx, req.(*PaginationQuery))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_UpdateUserEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateUserEmail)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).UpdateUserEmail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_UpdateUserEmail_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).UpdateUserEmail(ctx, req.(*UpdateUserEmail))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_UpdateUserRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateUserRole)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).UpdateUserRole(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_UpdateUserRole_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).UpdateUserRole(ctx, req.(*UpdateUserRole))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_DeleteUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).DeleteUserById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_DeleteUserById_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).DeleteUserById(ctx, req.(*Id))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_BanUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BanUser)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).BanUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_BanUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).BanUser(ctx, req.(*BanUser))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_UnbanUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).UnbanUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_UnbanUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).UnbanUser(ctx, req.(*Id))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -611,52 +248,521 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_Logout_Handler,
 		},
 		{
-			MethodName: "linkActivate",
-			Handler:    _AuthService_LinkActivate_Handler,
-		},
-		{
-			MethodName: "changePassword",
-			Handler:    _AuthService_ChangePassword_Handler,
-		},
-		{
 			MethodName: "checkAuth",
 			Handler:    _AuthService_CheckAuth_Handler,
 		},
-		{
-			MethodName: "checkRole",
-			Handler:    _AuthService_CheckRole_Handler,
-		},
-		{
-			MethodName: "confirmChangePassword",
-			Handler:    _AuthService_ConfirmChangePassword_Handler,
-		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "auth_v1/auth_service.proto",
+}
+
+const (
+	UserService_GetUserById_FullMethodName           = "/auth_v1.UserService/getUserById"
+	UserService_GetUsersByQuery_FullMethodName       = "/auth_v1.UserService/getUsersByQuery"
+	UserService_UpdateUserEmail_FullMethodName       = "/auth_v1.UserService/updateUserEmail"
+	UserService_UpdateUserRole_FullMethodName        = "/auth_v1.UserService/updateUserRole"
+	UserService_DeleteUserById_FullMethodName        = "/auth_v1.UserService/deleteUserById"
+	UserService_ChangePassword_FullMethodName        = "/auth_v1.UserService/changePassword"
+	UserService_CheckRole_FullMethodName             = "/auth_v1.UserService/checkRole"
+	UserService_ConfirmChangePassword_FullMethodName = "/auth_v1.UserService/confirmChangePassword"
+)
+
+// UserServiceClient is the client API for UserService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type UserServiceClient interface {
+	GetUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*ResponseUser, error)
+	GetUsersByQuery(ctx context.Context, in *PaginationQuery, opts ...grpc.CallOption) (*ManyResponseUser, error)
+	UpdateUserEmail(ctx context.Context, in *UpdateUserEmail, opts ...grpc.CallOption) (*ResponseUser, error)
+	UpdateUserRole(ctx context.Context, in *UpdateUserRole, opts ...grpc.CallOption) (*ResponseUser, error)
+	DeleteUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error)
+	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*Empty, error)
+	CheckRole(ctx context.Context, in *CheckRoleRequest, opts ...grpc.CallOption) (*ResponseUser, error)
+	ConfirmChangePassword(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error)
+}
+
+type userServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
+	return &userServiceClient{cc}
+}
+
+func (c *userServiceClient) GetUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*ResponseUser, error) {
+	out := new(ResponseUser)
+	err := c.cc.Invoke(ctx, UserService_GetUserById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetUsersByQuery(ctx context.Context, in *PaginationQuery, opts ...grpc.CallOption) (*ManyResponseUser, error) {
+	out := new(ManyResponseUser)
+	err := c.cc.Invoke(ctx, UserService_GetUsersByQuery_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateUserEmail(ctx context.Context, in *UpdateUserEmail, opts ...grpc.CallOption) (*ResponseUser, error) {
+	out := new(ResponseUser)
+	err := c.cc.Invoke(ctx, UserService_UpdateUserEmail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateUserRole(ctx context.Context, in *UpdateUserRole, opts ...grpc.CallOption) (*ResponseUser, error) {
+	out := new(ResponseUser)
+	err := c.cc.Invoke(ctx, UserService_UpdateUserRole_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) DeleteUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserService_DeleteUserById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserService_ChangePassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) CheckRole(ctx context.Context, in *CheckRoleRequest, opts ...grpc.CallOption) (*ResponseUser, error) {
+	out := new(ResponseUser)
+	err := c.cc.Invoke(ctx, UserService_CheckRole_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) ConfirmChangePassword(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserService_ConfirmChangePassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UserServiceServer is the server API for UserService service.
+// All implementations must embed UnimplementedUserServiceServer
+// for forward compatibility
+type UserServiceServer interface {
+	GetUserById(context.Context, *Id) (*ResponseUser, error)
+	GetUsersByQuery(context.Context, *PaginationQuery) (*ManyResponseUser, error)
+	UpdateUserEmail(context.Context, *UpdateUserEmail) (*ResponseUser, error)
+	UpdateUserRole(context.Context, *UpdateUserRole) (*ResponseUser, error)
+	DeleteUserById(context.Context, *Id) (*Empty, error)
+	ChangePassword(context.Context, *ChangePasswordRequest) (*Empty, error)
+	CheckRole(context.Context, *CheckRoleRequest) (*ResponseUser, error)
+	ConfirmChangePassword(context.Context, *Link) (*Empty, error)
+	mustEmbedUnimplementedUserServiceServer()
+}
+
+// UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedUserServiceServer struct {
+}
+
+func (UnimplementedUserServiceServer) GetUserById(context.Context, *Id) (*ResponseUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
+}
+func (UnimplementedUserServiceServer) GetUsersByQuery(context.Context, *PaginationQuery) (*ManyResponseUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsersByQuery not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateUserEmail(context.Context, *UpdateUserEmail) (*ResponseUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserEmail not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateUserRole(context.Context, *UpdateUserRole) (*ResponseUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserRole not implemented")
+}
+func (UnimplementedUserServiceServer) DeleteUserById(context.Context, *Id) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserById not implemented")
+}
+func (UnimplementedUserServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
+}
+func (UnimplementedUserServiceServer) CheckRole(context.Context, *CheckRoleRequest) (*ResponseUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckRole not implemented")
+}
+func (UnimplementedUserServiceServer) ConfirmChangePassword(context.Context, *Link) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConfirmChangePassword not implemented")
+}
+func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
+
+// UnsafeUserServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserServiceServer will
+// result in compilation errors.
+type UnsafeUserServiceServer interface {
+	mustEmbedUnimplementedUserServiceServer()
+}
+
+func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
+	s.RegisterService(&UserService_ServiceDesc, srv)
+}
+
+func _UserService_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Id)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserById(ctx, req.(*Id))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetUsersByQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PaginationQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUsersByQuery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUsersByQuery_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUsersByQuery(ctx, req.(*PaginationQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateUserEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserEmail)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateUserEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UpdateUserEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateUserEmail(ctx, req.(*UpdateUserEmail))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateUserRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRole)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateUserRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UpdateUserRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateUserRole(ctx, req.(*UpdateUserRole))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_DeleteUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Id)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).DeleteUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_DeleteUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).DeleteUserById(ctx, req.(*Id))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangePasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).ChangePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_ChangePassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_CheckRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).CheckRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_CheckRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).CheckRole(ctx, req.(*CheckRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_ConfirmChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Link)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).ConfirmChangePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_ConfirmChangePassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).ConfirmChangePassword(ctx, req.(*Link))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var UserService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "auth_v1.UserService",
+	HandlerType: (*UserServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "getUserById",
-			Handler:    _AuthService_GetUserById_Handler,
+			Handler:    _UserService_GetUserById_Handler,
 		},
 		{
 			MethodName: "getUsersByQuery",
-			Handler:    _AuthService_GetUsersByQuery_Handler,
+			Handler:    _UserService_GetUsersByQuery_Handler,
 		},
 		{
 			MethodName: "updateUserEmail",
-			Handler:    _AuthService_UpdateUserEmail_Handler,
+			Handler:    _UserService_UpdateUserEmail_Handler,
 		},
 		{
 			MethodName: "updateUserRole",
-			Handler:    _AuthService_UpdateUserRole_Handler,
+			Handler:    _UserService_UpdateUserRole_Handler,
 		},
 		{
 			MethodName: "deleteUserById",
-			Handler:    _AuthService_DeleteUserById_Handler,
+			Handler:    _UserService_DeleteUserById_Handler,
+		},
+		{
+			MethodName: "changePassword",
+			Handler:    _UserService_ChangePassword_Handler,
+		},
+		{
+			MethodName: "checkRole",
+			Handler:    _UserService_CheckRole_Handler,
+		},
+		{
+			MethodName: "confirmChangePassword",
+			Handler:    _UserService_ConfirmChangePassword_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "auth_v1/auth_service.proto",
+}
+
+const (
+	UtilityService_LinkActivate_FullMethodName = "/auth_v1.UtilityService/linkActivate"
+	UtilityService_BanUser_FullMethodName      = "/auth_v1.UtilityService/banUser"
+	UtilityService_UnbanUser_FullMethodName    = "/auth_v1.UtilityService/unbanUser"
+)
+
+// UtilityServiceClient is the client API for UtilityService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type UtilityServiceClient interface {
+	LinkActivate(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error)
+	BanUser(ctx context.Context, in *BanUser, opts ...grpc.CallOption) (*ResponseUser, error)
+	UnbanUser(ctx context.Context, in *Id, opts ...grpc.CallOption) (*ResponseUser, error)
+}
+
+type utilityServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewUtilityServiceClient(cc grpc.ClientConnInterface) UtilityServiceClient {
+	return &utilityServiceClient{cc}
+}
+
+func (c *utilityServiceClient) LinkActivate(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UtilityService_LinkActivate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *utilityServiceClient) BanUser(ctx context.Context, in *BanUser, opts ...grpc.CallOption) (*ResponseUser, error) {
+	out := new(ResponseUser)
+	err := c.cc.Invoke(ctx, UtilityService_BanUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *utilityServiceClient) UnbanUser(ctx context.Context, in *Id, opts ...grpc.CallOption) (*ResponseUser, error) {
+	out := new(ResponseUser)
+	err := c.cc.Invoke(ctx, UtilityService_UnbanUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UtilityServiceServer is the server API for UtilityService service.
+// All implementations must embed UnimplementedUtilityServiceServer
+// for forward compatibility
+type UtilityServiceServer interface {
+	LinkActivate(context.Context, *Link) (*Empty, error)
+	BanUser(context.Context, *BanUser) (*ResponseUser, error)
+	UnbanUser(context.Context, *Id) (*ResponseUser, error)
+	mustEmbedUnimplementedUtilityServiceServer()
+}
+
+// UnimplementedUtilityServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedUtilityServiceServer struct {
+}
+
+func (UnimplementedUtilityServiceServer) LinkActivate(context.Context, *Link) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LinkActivate not implemented")
+}
+func (UnimplementedUtilityServiceServer) BanUser(context.Context, *BanUser) (*ResponseUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BanUser not implemented")
+}
+func (UnimplementedUtilityServiceServer) UnbanUser(context.Context, *Id) (*ResponseUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnbanUser not implemented")
+}
+func (UnimplementedUtilityServiceServer) mustEmbedUnimplementedUtilityServiceServer() {}
+
+// UnsafeUtilityServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UtilityServiceServer will
+// result in compilation errors.
+type UnsafeUtilityServiceServer interface {
+	mustEmbedUnimplementedUtilityServiceServer()
+}
+
+func RegisterUtilityServiceServer(s grpc.ServiceRegistrar, srv UtilityServiceServer) {
+	s.RegisterService(&UtilityService_ServiceDesc, srv)
+}
+
+func _UtilityService_LinkActivate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Link)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UtilityServiceServer).LinkActivate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UtilityService_LinkActivate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UtilityServiceServer).LinkActivate(ctx, req.(*Link))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UtilityService_BanUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BanUser)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UtilityServiceServer).BanUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UtilityService_BanUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UtilityServiceServer).BanUser(ctx, req.(*BanUser))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UtilityService_UnbanUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Id)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UtilityServiceServer).UnbanUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UtilityService_UnbanUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UtilityServiceServer).UnbanUser(ctx, req.(*Id))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// UtilityService_ServiceDesc is the grpc.ServiceDesc for UtilityService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var UtilityService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "auth_v1.UtilityService",
+	HandlerType: (*UtilityServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "linkActivate",
+			Handler:    _UtilityService_LinkActivate_Handler,
 		},
 		{
 			MethodName: "banUser",
-			Handler:    _AuthService_BanUser_Handler,
+			Handler:    _UtilityService_BanUser_Handler,
 		},
 		{
 			MethodName: "unbanUser",
-			Handler:    _AuthService_UnbanUser_Handler,
+			Handler:    _UtilityService_UnbanUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

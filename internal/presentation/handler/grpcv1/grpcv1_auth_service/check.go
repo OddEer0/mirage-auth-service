@@ -1,4 +1,4 @@
-package grpcv1
+package grpcv1AuthService
 
 import (
 	"context"

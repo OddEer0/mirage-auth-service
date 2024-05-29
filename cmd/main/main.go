@@ -5,7 +5,8 @@ import (
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/config"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/logger"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
-	"github.com/OddEer0/mirage-auth-service/internal/presentation/handler/grpcv1"
+	grpcv1AuthService "github.com/OddEer0/mirage-auth-service/internal/presentation/handler/grpcv1/grpcv1_auth_service"
+	"github.com/OddEer0/mirage-auth-service/internal/presentation/interactor"
 	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
 	"github.com/jackc/pgx/v5"
 	"google.golang.org/grpc"
@@ -41,7 +42,14 @@ func main() {
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(logger.LoggingInterceptor),
 	)
-	authv1.RegisterAuthServiceServer(grpcServer, grpcv1.New(cfg, log, conn))
+
+	dependencies := interactor.New(cfg, log, conn)
+
+	authv1.RegisterAuthServiceServer(grpcServer, grpcv1AuthService.New(&grpcv1AuthService.Dependencies{
+		UserRepository: dependencies.UserRepository,
+		AuthUseCase:    dependencies.AuthUseCase,
+		Log:            log,
+	}))
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Error("grpc serve error", "cause", err.Error())
 	}

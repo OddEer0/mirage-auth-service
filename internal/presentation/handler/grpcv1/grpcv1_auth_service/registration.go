@@ -1,4 +1,4 @@
-package grpcv1
+package grpcv1AuthService
 
 import (
 	"context"
@@ -7,10 +7,11 @@ import (
 	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
 )
 
-func (a *AuthServiceServer) Login(ctx context.Context, data *authv1.LoginRequest) (*authv1.AuthResponse, error) {
-	authRes, err := a.authUseCase.Login(ctx, &appDto.LoginData{
+func (a *AuthServiceServer) Registration(ctx context.Context, data *authv1.RegistrationRequest) (*authv1.AuthResponse, error) {
+	authRes, err := a.authUseCase.Registration(ctx, &appDto.RegistrationData{
 		Login:    data.Login,
 		Password: data.Password,
+		Email:    data.Email,
 	})
 	if err != nil {
 		return nil, errorHandler.Catch(err)

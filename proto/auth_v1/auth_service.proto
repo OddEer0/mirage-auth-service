@@ -111,16 +111,22 @@ service AuthService {
   rpc login(LoginRequest) returns (AuthResponse) {}
   rpc refresh(RefreshToken) returns (AuthResponse) {}
   rpc logout(RefreshToken) returns (Empty) {}
-  rpc linkActivate(Link) returns (Empty) {}
-  rpc changePassword(ChangePasswordRequest) returns (Empty) {}
   rpc checkAuth(AccessToken) returns (JwtUser) {}
-  rpc checkRole(CheckRoleRequest) returns (ResponseUser) {}
-  rpc confirmChangePassword(Link) returns (Empty) {}
+}
+
+service UserService {
   rpc getUserById(Id) returns(ResponseUser) {}
   rpc getUsersByQuery(PaginationQuery) returns(ManyResponseUser) {}
   rpc updateUserEmail(UpdateUserEmail) returns(ResponseUser) {}
   rpc updateUserRole(UpdateUserRole) returns(ResponseUser) {}
   rpc deleteUserById(Id) returns(Empty) {}
+  rpc changePassword(ChangePasswordRequest) returns (Empty) {}
+  rpc checkRole(CheckRoleRequest) returns (ResponseUser) {}
+  rpc confirmChangePassword(Link) returns (Empty) {}
+}
+
+service UtilityService {
+  rpc linkActivate(Link) returns (Empty) {}
   rpc banUser(BanUser) returns(ResponseUser) {}
   rpc unbanUser(Id) returns(ResponseUser) {}
 }
