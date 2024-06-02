@@ -277,7 +277,7 @@ type UserServiceClient interface {
 	UpdateUserRole(ctx context.Context, in *UpdateUserRole, opts ...grpc.CallOption) (*ResponseUser, error)
 	DeleteUserById(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*Empty, error)
-	CheckRole(ctx context.Context, in *CheckRoleRequest, opts ...grpc.CallOption) (*ResponseUser, error)
+	CheckRole(ctx context.Context, in *CheckRoleRequest, opts ...grpc.CallOption) (*Bool, error)
 	ConfirmChangePassword(ctx context.Context, in *Link, opts ...grpc.CallOption) (*Empty, error)
 }
 
@@ -343,8 +343,8 @@ func (c *userServiceClient) ChangePassword(ctx context.Context, in *ChangePasswo
 	return out, nil
 }
 
-func (c *userServiceClient) CheckRole(ctx context.Context, in *CheckRoleRequest, opts ...grpc.CallOption) (*ResponseUser, error) {
-	out := new(ResponseUser)
+func (c *userServiceClient) CheckRole(ctx context.Context, in *CheckRoleRequest, opts ...grpc.CallOption) (*Bool, error) {
+	out := new(Bool)
 	err := c.cc.Invoke(ctx, UserService_CheckRole_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -371,7 +371,7 @@ type UserServiceServer interface {
 	UpdateUserRole(context.Context, *UpdateUserRole) (*ResponseUser, error)
 	DeleteUserById(context.Context, *Id) (*Empty, error)
 	ChangePassword(context.Context, *ChangePasswordRequest) (*Empty, error)
-	CheckRole(context.Context, *CheckRoleRequest) (*ResponseUser, error)
+	CheckRole(context.Context, *CheckRoleRequest) (*Bool, error)
 	ConfirmChangePassword(context.Context, *Link) (*Empty, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
@@ -398,7 +398,7 @@ func (UnimplementedUserServiceServer) DeleteUserById(context.Context, *Id) (*Emp
 func (UnimplementedUserServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
-func (UnimplementedUserServiceServer) CheckRole(context.Context, *CheckRoleRequest) (*ResponseUser, error) {
+func (UnimplementedUserServiceServer) CheckRole(context.Context, *CheckRoleRequest) (*Bool, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckRole not implemented")
 }
 func (UnimplementedUserServiceServer) ConfirmChangePassword(context.Context, *Link) (*Empty, error) {

@@ -9,6 +9,10 @@ message ErrorDetail {
   int32 code = 2;
 }
 
+message Bool {
+  bool value = 1;
+}
+
 message Id {
   string id = 1;
 }
@@ -81,7 +85,7 @@ message UpdateUserEmail {
 
 message UpdateUserRole {
   string id = 1;
-  string roleId = 2;
+  string role = 2;
 }
 
 message BanUser {
@@ -121,7 +125,7 @@ service UserService {
   rpc updateUserRole(UpdateUserRole) returns(ResponseUser) {}
   rpc deleteUserById(Id) returns(Empty) {}
   rpc changePassword(ChangePasswordRequest) returns (Empty) {}
-  rpc checkRole(CheckRoleRequest) returns (ResponseUser) {}
+  rpc checkRole(CheckRoleRequest) returns (Bool) {}
   rpc confirmChangePassword(Link) returns (Empty) {}
 }
 
