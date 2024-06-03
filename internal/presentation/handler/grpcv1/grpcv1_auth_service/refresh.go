@@ -1,20 +1,15 @@
-package grpcv1
+package grpcv1AuthService
 
 import (
 	"context"
-	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
-	errorHandler "github.com/OddEer0/mirage-auth-service/internal/presentation/error_handler"
+	errorgrpc "github.com/OddEer0/mirage-auth-service/internal/presentation/errors/error_grpc"
 	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
 )
 
-func (a *AuthServiceServer) Registration(ctx context.Context, data *authv1.RegistrationRequest) (*authv1.AuthResponse, error) {
-	authRes, err := a.authUseCase.Registration(ctx, &appDto.RegistrationData{
-		Login:    data.Login,
-		Password: data.Password,
-		Email:    data.Email,
-	})
+func (a *AuthServiceServer) Refresh(ctx context.Context, token *authv1.RefreshToken) (*authv1.AuthResponse, error) {
+	authRes, err := a.authUseCase.Refresh(ctx, token.RefreshToken)
 	if err != nil {
-		return nil, errorHandler.Catch(err)
+		return nil, errorgrpc.Catch(err)
 	}
 	banReason := ""
 	if authRes.User.BanReason != nil {

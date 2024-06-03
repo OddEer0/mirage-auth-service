@@ -20,4 +20,5 @@ type UserRepository interface {
 	HasUserById(ctx context.Context, id string) (bool, error)
 	HasUserByLogin(ctx context.Context, login string) (bool, error)
 	HasUserByEmail(ctx context.Context, email string) (bool, error)
+	CheckUserRole(ctx context.Context, id, rol string) (bool, error)
 }

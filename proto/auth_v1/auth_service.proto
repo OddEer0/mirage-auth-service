@@ -9,6 +9,10 @@ message ErrorDetail {
   int32 code = 2;
 }
 
+message Bool {
+  bool value = 1;
+}
+
 message Id {
   string id = 1;
 }
@@ -81,7 +85,7 @@ message UpdateUserEmail {
 
 message UpdateUserRole {
   string id = 1;
-  string roleId = 2;
+  string role = 2;
 }
 
 message BanUser {
@@ -111,16 +115,22 @@ service AuthService {
   rpc login(LoginRequest) returns (AuthResponse) {}
   rpc refresh(RefreshToken) returns (AuthResponse) {}
   rpc logout(RefreshToken) returns (Empty) {}
-  rpc linkActivate(Link) returns (Empty) {}
-  rpc changePassword(ChangePasswordRequest) returns (Empty) {}
   rpc checkAuth(AccessToken) returns (JwtUser) {}
-  rpc checkRole(CheckRoleRequest) returns (ResponseUser) {}
-  rpc confirmChangePassword(Link) returns (Empty) {}
+}
+
+service UserService {
   rpc getUserById(Id) returns(ResponseUser) {}
   rpc getUsersByQuery(PaginationQuery) returns(ManyResponseUser) {}
-  rpc updateUserEmail(UpdateUserEmail) returns(ResponseUser) {}
   rpc updateUserRole(UpdateUserRole) returns(ResponseUser) {}
   rpc deleteUserById(Id) returns(Empty) {}
+  rpc changePassword(ChangePasswordRequest) returns (Empty) {}
+  rpc checkRole(CheckRoleRequest) returns (Bool) {}
+  rpc confirmChangePassword(Link) returns (Empty) {}
+}
+
+service UtilityService {
+  rpc linkActivate(Link) returns (Empty) {}
+  rpc isUserActivate(Id) returns (Bool) {}
   rpc banUser(BanUser) returns(ResponseUser) {}
   rpc unbanUser(Id) returns(ResponseUser) {}
 }
