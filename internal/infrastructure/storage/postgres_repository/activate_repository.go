@@ -48,6 +48,25 @@ type userActivateRepository struct {
 	db  *pgx.Conn
 }
 
+func (u *userActivateRepository) ActivateUserByLink(ctx context.Context, link string) (*model.UserActivate, error) {
+	stackTrace.Add(ctx, "package: postgresRepository, type: userActivateRepository, method: ActivateUser")
+	defer stackTrace.Done(ctx)
+
+	updatedActivate := &model.UserActivate{}
+	err := u.db.QueryRow(ctx, activateUserByLinkQuery, link).
+		Scan(&updatedActivate.UserId, &updatedActivate.IsActivate, &updatedActivate.Link, &updatedActivate.UpdatedAt, &updatedActivate.CreatedAt)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			u.log.ErrorContext(ctx, "user activate not found", slog.Any("cause", err), slog.String("link", link))
+			return nil, ErrUserActivateNotFound
+		}
+		u.log.ErrorContext(ctx, "activate user query error", slog.Any("cause", err), slog.String("link", link))
+		return nil, ErrInternal
+	}
+
+	return updatedActivate, nil
+}
+
 func (u *userActivateRepository) Create(ctx context.Context, userId string) (*model.UserActivate, error) {
 	stackTrace.Add(ctx, "package: postgresRepository, type: userActivateRepository, method: Create")
 	defer stackTrace.Done(ctx)
@@ -122,7 +141,7 @@ func (u *userActivateRepository) GetByUserId(ctx context.Context, userId string)
 	return userActivate, nil
 }
 
-func (u *userActivateRepository) ActivateUser(ctx context.Context, userId string) (*model.UserActivate, error) {
+func (u *userActivateRepository) ActivateUserById(ctx context.Context, userId string) (*model.UserActivate, error) {
 	stackTrace.Add(ctx, "package: postgresRepository, type: userActivateRepository, method: ActivateUser")
 	defer stackTrace.Done(ctx)
 

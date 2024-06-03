@@ -11,9 +11,8 @@ import (
 type (
 	UseCase interface {
 		GetById(ctx context.Context, id string) (*appDto.PureUser, error)
-		GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*appDto.PureUser, error)
+		GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*appDto.PureUser, uint, error)
 		DeleteById(ctx context.Context, id string) error
-		UpdateUserEmail(ctx context.Context, id, email string) (*appDto.PureUser, error)
 		UpdateUserRole(ctx context.Context, id, role string) (*appDto.PureUser, error)
 		CheckUserRole(ctx context.Context, userId, role string) (bool, error)
 	}

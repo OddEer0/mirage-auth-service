@@ -11,12 +11,40 @@ func (u *useCase) GetById(ctx context.Context, id string) (*appDto.PureUser, err
 	stackTrace.Add(ctx, "package: userUseCase, type: useCase, method: GetById")
 	defer stackTrace.Done(ctx)
 
-	return u.userService.GetById(ctx, id)
+	user, err := u.userRepository.GetById(ctx, id)
+	if err != nil {
+
+	}
+	return &appDto.PureUser{
+		Id:        user.Id,
+		Login:     user.Login,
+		Email:     user.Email,
+		IsBanned:  user.IsBanned,
+		BanReason: user.BanReason,
+		Role:      user.Role,
+	}, nil
 }
 
-func (u *useCase) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*appDto.PureUser, error) {
+func (u *useCase) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*appDto.PureUser, uint, error) {
 	stackTrace.Add(ctx, "package: userUseCase, type: useCase, method: GetByQuery")
 	defer stackTrace.Done(ctx)
 
-	return u.userService.GetByQuery(ctx, query)
+	users, pageCount, err := u.userRepository.GetByQuery(ctx, query)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	mappedUser := make([]*appDto.PureUser, 0, len(users))
+	for _, user := range users {
+		mappedUser = append(mappedUser, &appDto.PureUser{
+			Id:        user.Id,
+			Login:     user.Login,
+			Email:     user.Email,
+			IsBanned:  user.IsBanned,
+			BanReason: user.BanReason,
+			Role:      user.Role,
+		})
+	}
+
+	return mappedUser, pageCount, nil
 }

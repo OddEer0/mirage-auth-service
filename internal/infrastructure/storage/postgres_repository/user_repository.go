@@ -59,11 +59,30 @@ const (
 		WHERE id = $1
 		RETURNING id, login, email, password, role, isBanned, banReason, updatedAt, createdAt;
 	`
+	checkUserRoleQuery = `
+		SELECT EXISTS(SELECT 1 FROM users WHERE id = $1 AND role = $2);
+	`
 )
 
 type postgresRepository struct {
 	log *slog.Logger
 	db  *pgx.Conn
+}
+
+func (p *postgresRepository) CheckUserRole(ctx context.Context, id, role string) (bool, error) {
+	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: CheckUserRole")
+	defer stackTrace.Done(ctx)
+
+	var exists bool
+	err := p.db.QueryRow(ctx, checkUserRoleQuery, id).Scan(&exists)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return exists, nil
+		}
+		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("id", id))
+		return exists, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+	}
+	return exists, nil
 }
 
 func (p *postgresRepository) GetByLogin(ctx context.Context, login string) (*model.User, error) {

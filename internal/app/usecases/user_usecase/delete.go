@@ -9,5 +9,5 @@ func (u *useCase) DeleteById(ctx context.Context, id string) error {
 	stackTrace.Add(ctx, "package: userUseCase, type: useCase, method: DeleteById")
 	defer stackTrace.Done(ctx)
 
-	return u.userService.DeleteById(ctx, id)
+	return u.userRepository.Delete(ctx, id)
 }
