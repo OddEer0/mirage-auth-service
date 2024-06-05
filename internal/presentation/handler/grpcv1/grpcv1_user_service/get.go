@@ -4,6 +4,7 @@ import (
 	"context"
 	domainQuery "github.com/OddEer0/mirage-auth-service/internal/domain/repository/domain_query"
 	errorgrpc "github.com/OddEer0/mirage-auth-service/internal/presentation/errors/error_grpc"
+	grpcMapper "github.com/OddEer0/mirage-auth-service/internal/presentation/mapper/grpc_mapper"
 	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
 )
 
@@ -13,18 +14,8 @@ func (u *UserServiceServer) GetUserById(ctx context.Context, id *authv1.Id) (*au
 		return nil, errorgrpc.Catch(err)
 	}
 
-	banReason := ""
-	if user.BanReason != nil {
-		banReason = *user.BanReason
-	}
-	return &authv1.ResponseUser{
-		Id:        user.Id,
-		Login:     user.Login,
-		Email:     user.Email,
-		Role:      user.Role,
-		IsBanned:  user.IsBanned,
-		BanReason: banReason,
-	}, nil
+	mapper := grpcMapper.UserMapper{}
+	return mapper.PureUserToResponseUserV1(user), nil
 }
 
 func (u *UserServiceServer) GetUsersByQuery(ctx context.Context, query *authv1.PaginationQuery) (*authv1.ManyResponseUser, error) {
@@ -34,19 +25,9 @@ func (u *UserServiceServer) GetUsersByQuery(ctx context.Context, query *authv1.P
 	}
 
 	responseUsers := make([]*authv1.ResponseUser, 0, len(users))
+	mapper := grpcMapper.UserMapper{}
 	for _, user := range users {
-		banReason := ""
-		if user.BanReason != nil {
-			banReason = *user.BanReason
-		}
-		responseUsers = append(responseUsers, &authv1.ResponseUser{
-			Id:        user.Id,
-			Login:     user.Login,
-			Email:     user.Email,
-			Role:      user.Role,
-			IsBanned:  user.IsBanned,
-			BanReason: banReason,
-		})
+		responseUsers = append(responseUsers, mapper.ModelUserToResponseUserV1(user))
 	}
 
 	return &authv1.ManyResponseUser{

@@ -3,6 +3,7 @@ package userUseCase
 import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
+	appMapper "github.com/OddEer0/mirage-auth-service/internal/app/app_mapper"
 	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
 )
 
@@ -15,12 +16,6 @@ func (u *useCase) UpdateUserRole(ctx context.Context, id, role string) (*appDto.
 		return nil, err
 	}
 
-	return &appDto.PureUser{
-		Id:        user.Id,
-		Login:     user.Login,
-		Email:     user.Email,
-		IsBanned:  user.IsBanned,
-		BanReason: user.BanReason,
-		Role:      user.Role,
-	}, nil
+	mapper := appMapper.UserMapper{}
+	return mapper.ToPureUser(user), nil
 }

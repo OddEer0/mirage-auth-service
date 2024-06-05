@@ -3,6 +3,7 @@ package userUseCase
 import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
+	appMapper "github.com/OddEer0/mirage-auth-service/internal/app/app_mapper"
 	domainQuery "github.com/OddEer0/mirage-auth-service/internal/domain/repository/domain_query"
 	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
 )
@@ -13,16 +14,10 @@ func (u *useCase) GetById(ctx context.Context, id string) (*appDto.PureUser, err
 
 	user, err := u.userRepository.GetById(ctx, id)
 	if err != nil {
-
+		return nil, err
 	}
-	return &appDto.PureUser{
-		Id:        user.Id,
-		Login:     user.Login,
-		Email:     user.Email,
-		IsBanned:  user.IsBanned,
-		BanReason: user.BanReason,
-		Role:      user.Role,
-	}, nil
+	mapper := appMapper.UserMapper{}
+	return mapper.ToPureUser(user), nil
 }
 
 func (u *useCase) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*appDto.PureUser, uint, error) {
@@ -35,15 +30,9 @@ func (u *useCase) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRe
 	}
 
 	mappedUser := make([]*appDto.PureUser, 0, len(users))
+	mapper := appMapper.UserMapper{}
 	for _, user := range users {
-		mappedUser = append(mappedUser, &appDto.PureUser{
-			Id:        user.Id,
-			Login:     user.Login,
-			Email:     user.Email,
-			IsBanned:  user.IsBanned,
-			BanReason: user.BanReason,
-			Role:      user.Role,
-		})
+		mappedUser = append(mappedUser, mapper.ToPureUser(user))
 	}
 
 	return mappedUser, pageCount, nil
