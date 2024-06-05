@@ -3,6 +3,7 @@ package authUseCase
 import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
+	appMapper "github.com/OddEer0/mirage-auth-service/internal/app/app_mapper"
 	tokenService "github.com/OddEer0/mirage-auth-service/internal/app/services/token_service"
 	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
 )
@@ -28,12 +29,7 @@ func (u *useCase) Registration(ctx context.Context, data *appDto.RegistrationDat
 		return nil, err
 	}
 
-	return &AuthResult{User: &appDto.PureUser{
-		Id:        user.Id,
-		Login:     user.Login,
-		Email:     user.Email,
-		IsBanned:  user.IsBanned,
-		BanReason: user.BanReason,
-		Role:      user.Role,
-	}, Tokens: tokens}, nil
+	mapper := appMapper.UserMapper{}
+	pureUser := mapper.ToPureUser(user)
+	return &AuthResult{User: pureUser, Tokens: tokens}, nil
 }
