@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
@@ -26,13 +25,20 @@ func replaceInFile(filePath, oldString, newString string) error {
 }
 
 func RenameAllGoCodeFragment(from, to string) {
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("Cannot get current file info")
+	execPath, err := os.Executable()
+	if err != nil {
+		fmt.Printf("Cannot get executable path: %v\n", err)
+		return
 	}
 
-	root := filepath.Dir(filename)
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+	absExecPath, err := filepath.Abs(execPath)
+	if err != nil {
+		fmt.Printf("Cannot get absolute path: %v\n", err)
+		return
+	}
+
+	root := filepath.Dir(absExecPath)
+	err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() && filepath.Ext(path) == ".go" {
 			err := replaceInFile(path, from, to)
 			if err != nil {

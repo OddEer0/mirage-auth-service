@@ -15,5 +15,7 @@ proto_gen:
 run_client:
 	go run client/main.go
 
-build_script:
+run_script:
 	go build scripts/main/main.go
+	./main
+	rm -rf main

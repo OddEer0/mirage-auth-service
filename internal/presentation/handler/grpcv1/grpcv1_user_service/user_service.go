@@ -3,7 +3,7 @@ package grpcv1UserService
 import (
 	userUseCase "github.com/OddEer0/mirage-auth-service/internal/app/usecases/user_usecase"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
-	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
+	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
 	"log/slog"
 )
 
