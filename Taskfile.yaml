@@ -1,0 +1,22 @@
+version: '3'
+
+env:
+  MAIN_FILE: cmd/main/main.go
+  SCRIPT_FILE: scripts/main/main.go
+  DEV_CFG_FILE: config/dev.yaml
+
+tasks:
+  build:
+    cmds:
+      - go build $MAIN_FILE
+  script:
+    cmds:
+      - go build $SCRIPT_FILE
+      - ./main
+      - rm main
+  dev:
+    cmds:
+      - CONFIG_PATH=$DEV_CFG_FILE go run $MAIN_FILE
+  client:
+    cmds:
+      - go run client/main.go
