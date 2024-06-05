@@ -2,7 +2,7 @@ package grpcv1UserService
 
 import (
 	"context"
-	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
+	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
 )
 
 func (u *UserServiceServer) CheckRole(ctx context.Context, request *authv1.CheckRoleRequest) (*authv1.Bool, error) {

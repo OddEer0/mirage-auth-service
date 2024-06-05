@@ -3,7 +3,7 @@ package grpcv1UserService
 import (
 	"context"
 	errorgrpc "github.com/OddEer0/mirage-auth-service/internal/presentation/errors/error_grpc"
-	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
+	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
 )
 
 func (u *UserServiceServer) UpdateUserRole(ctx context.Context, role *authv1.UpdateUserRole) (*authv1.ResponseUser, error) {

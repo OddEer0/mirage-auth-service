@@ -7,7 +7,7 @@ import (
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
 	grpcv1AuthService "github.com/OddEer0/mirage-auth-service/internal/presentation/handler/grpcv1/grpcv1_auth_service"
 	"github.com/OddEer0/mirage-auth-service/internal/presentation/interactor"
-	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
+	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
 	"github.com/jackc/pgx/v5"
 	"google.golang.org/grpc"
 	"log/slog"

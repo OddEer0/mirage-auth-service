@@ -4,7 +4,7 @@ import (
 	"context"
 	userActivateUsecase "github.com/OddEer0/mirage-auth-service/internal/app/usecases/user_activate_usecase"
 	errorgrpc "github.com/OddEer0/mirage-auth-service/internal/presentation/errors/error_grpc"
-	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
+	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
 	"log/slog"
 )
 

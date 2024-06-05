@@ -4,7 +4,7 @@ import (
 	"context"
 	domainQuery "github.com/OddEer0/mirage-auth-service/internal/domain/repository/domain_query"
 	errorgrpc "github.com/OddEer0/mirage-auth-service/internal/presentation/errors/error_grpc"
-	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
+	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
 )
 
 func (u *UserServiceServer) GetUserById(ctx context.Context, id *authv1.Id) (*authv1.ResponseUser, error) {

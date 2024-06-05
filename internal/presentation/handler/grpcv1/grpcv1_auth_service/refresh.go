@@ -3,7 +3,7 @@ package grpcv1AuthService
 import (
 	"context"
 	errorgrpc "github.com/OddEer0/mirage-auth-service/internal/presentation/errors/error_grpc"
-	authv1 "github.com/OddEer0/mirage-auth-service/pkg/gen/auth_v1"
+	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
 )
 
 func (a *AuthServiceServer) Refresh(ctx context.Context, token *authv1.RefreshToken) (*authv1.AuthResponse, error) {
