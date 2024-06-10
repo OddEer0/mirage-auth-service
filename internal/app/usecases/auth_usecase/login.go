@@ -6,7 +6,7 @@ import (
 	appMapper "github.com/OddEer0/mirage-auth-service/internal/app/app_mapper"
 	tokenService "github.com/OddEer0/mirage-auth-service/internal/app/services/token_service"
 	"github.com/OddEer0/mirage-auth-service/internal/domain"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 	"golang.org/x/crypto/bcrypt"
 )
 

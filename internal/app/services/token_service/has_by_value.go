@@ -2,7 +2,7 @@ package tokenService
 
 import (
 	"context"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 )
 
 func (s *service) HasByValue(ctx context.Context, refreshToken string) (bool, error) {

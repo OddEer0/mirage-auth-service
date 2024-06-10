@@ -4,7 +4,7 @@ import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 )
 
 func (s *service) Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*model.JwtToken, error) {

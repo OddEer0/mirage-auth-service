@@ -5,7 +5,7 @@ import (
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	appMapper "github.com/OddEer0/mirage-auth-service/internal/app/app_mapper"
 	domainQuery "github.com/OddEer0/mirage-auth-service/internal/domain/repository/domain_query"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 )
 
 func (u *useCase) GetById(ctx context.Context, id string) (*appDto.PureUser, error) {

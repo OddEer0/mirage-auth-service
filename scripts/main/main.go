@@ -1,9 +1,7 @@
 package main
 
-import (
-	"fmt"
-)
+import "github.com/OddEer0/mirage-auth-service/scripts"
 
 func main() {
-	fmt.Println("Hello script!!!")
+	scripts.RenameAllGoCodeFragment("github.com/OddEer0/stack-trace/stack_trace", "github.com/OddEer0/stack-trace/stack_trace")
 }

@@ -3,7 +3,7 @@ package userActivateUsecase
 import (
 	"context"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 )
 
 type (

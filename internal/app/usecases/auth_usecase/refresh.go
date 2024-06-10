@@ -5,7 +5,7 @@ import (
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	appMapper "github.com/OddEer0/mirage-auth-service/internal/app/app_mapper"
 	"github.com/OddEer0/mirage-auth-service/internal/domain"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 	"log/slog"
 )
 

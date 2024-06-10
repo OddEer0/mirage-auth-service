@@ -2,7 +2,7 @@ package userUseCase
 
 import (
 	"context"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 )
 
 func (u *useCase) CheckUserRole(ctx context.Context, userId, role string) (bool, error) {
