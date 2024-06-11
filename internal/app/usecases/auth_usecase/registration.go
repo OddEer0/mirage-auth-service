@@ -5,7 +5,7 @@ import (
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	appMapper "github.com/OddEer0/mirage-auth-service/internal/app/app_mapper"
 	tokenService "github.com/OddEer0/mirage-auth-service/internal/app/services/token_service"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 )
 
 func (u *useCase) Registration(ctx context.Context, data *appDto.RegistrationData) (*AuthResult, error) {

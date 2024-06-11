@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/OddEer0/mirage-auth-service/internal/domain"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 	"github.com/golang-jwt/jwt"
 	"log/slog"
 )

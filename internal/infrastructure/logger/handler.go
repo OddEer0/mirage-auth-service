@@ -2,7 +2,7 @@ package logger
 
 import (
 	"context"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 	"log/slog"
 )
 
@@ -12,8 +12,9 @@ type AppLogHandler struct {
 
 func (a AppLogHandler) Handle(ctx context.Context, r slog.Record) error {
 	if r.Level == slog.LevelError {
-		if !stackTrace.IsLock(ctx) {
-			r.AddAttrs(slog.String("stack_trace", stackTrace.Get(ctx)))
+		sTrace, ok := ctx.Value(stackTrace.Key).(*stackTrace.StackTrace)
+		if ok && sTrace.IsLock == 0 {
+			r.AddAttrs(slog.Any("stack_trace", stackTrace.GetStack(ctx)))
 		}
 		stackTrace.Lock(ctx)
 	}

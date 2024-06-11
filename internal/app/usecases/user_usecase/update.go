@@ -4,7 +4,7 @@ import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	appMapper "github.com/OddEer0/mirage-auth-service/internal/app/app_mapper"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 )
 
 func (u *useCase) UpdateUserRole(ctx context.Context, id, role string) (*appDto.PureUser, error) {

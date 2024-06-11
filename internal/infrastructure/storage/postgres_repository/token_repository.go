@@ -6,7 +6,7 @@ import (
 	"errors"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 	"github.com/jackc/pgx/v5"
 	"log/slog"
 	"time"

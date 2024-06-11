@@ -6,7 +6,7 @@ import (
 	"github.com/OddEer0/mirage-auth-service/internal/domain"
 	domainConstants "github.com/OddEer0/mirage-auth-service/internal/domain/domain_constants"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
-	stackTrace "github.com/OddEer0/mirage-auth-service/pkg/stack_trace"
+	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"log/slog"
