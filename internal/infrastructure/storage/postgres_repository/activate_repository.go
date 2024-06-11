@@ -6,9 +6,9 @@ import (
 	"errors"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
+	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
 	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"log/slog"
 	"time"
 )
@@ -45,7 +45,7 @@ const (
 
 type userActivateRepository struct {
 	log *slog.Logger
-	db  *pgx.Conn
+	db  postgres.Query
 }
 
 func (u *userActivateRepository) ActivateUserByLink(ctx context.Context, link string) (*model.UserActivate, error) {
@@ -195,7 +195,7 @@ func (u *userActivateRepository) HasById(ctx context.Context, userId string) (bo
 	return exists, nil
 }
 
-func NewUserActivateRepository(log *slog.Logger, db *pgx.Conn) repository.UserActivateRepository {
+func NewUserActivateRepository(log *slog.Logger, db postgres.Query) repository.UserActivateRepository {
 	return &userActivateRepository{
 		log: log,
 		db:  db,

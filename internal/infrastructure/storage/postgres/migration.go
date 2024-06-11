@@ -5,13 +5,12 @@ import (
 	domainConstants "github.com/OddEer0/mirage-auth-service/internal/domain/domain_constants"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/config"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"golang.org/x/crypto/bcrypt"
 	"log/slog"
 	"time"
 )
 
-func InitMigration(ctx context.Context, conn *pgx.Conn, log *slog.Logger) error {
+func InitMigration(ctx context.Context, conn Query, log *slog.Logger) error {
 	if _, err := conn.Exec(ctx, `CREATE TABLE IF NOT EXISTS users (
 		id UUID PRIMARY KEY,
 		login VARCHAR(50) NOT NULL UNIQUE,
@@ -50,7 +49,7 @@ func InitMigration(ctx context.Context, conn *pgx.Conn, log *slog.Logger) error 
 	return nil
 }
 
-func InitSuperAdmin(ctx context.Context, conn *pgx.Conn, cfg *config.Config, log *slog.Logger) error {
+func InitSuperAdmin(ctx context.Context, conn Query, cfg *config.Config, log *slog.Logger) error {
 	query := "SELECT EXISTS(SELECT 1 FROM users WHERE login = $1)"
 	var exists bool
 	err := conn.QueryRow(ctx, query, cfg.SuperAdmin.Login).Scan(&exists)

@@ -6,8 +6,8 @@ import (
 	"errors"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
+	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
 	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
-	"github.com/jackc/pgx/v5"
 	"log/slog"
 	"time"
 )
@@ -42,7 +42,7 @@ const (
 
 type tokenRepository struct {
 	log *slog.Logger
-	db  *pgx.Conn
+	db  postgres.Query
 }
 
 func (t tokenRepository) DeleteByValue(ctx context.Context, value string) error {
@@ -191,6 +191,6 @@ func (t tokenRepository) HasByValue(ctx context.Context, token string) (bool, er
 	return exists, nil
 }
 
-func NewTokenRepository(logger *slog.Logger, db *pgx.Conn) repository.JwtTokenRepository {
+func NewTokenRepository(logger *slog.Logger, db postgres.Query) repository.JwtTokenRepository {
 	return &tokenRepository{db: db, log: logger}
 }
