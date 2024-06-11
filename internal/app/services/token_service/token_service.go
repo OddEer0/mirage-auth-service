@@ -3,11 +3,11 @@ package tokenService
 import (
 	"context"
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
+	"github.com/OddEer0/mirage-auth-service/internal/domain"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/config"
 	"github.com/golang-jwt/jwt"
-	"log/slog"
 )
 
 type (
@@ -35,13 +35,13 @@ type (
 	}
 
 	service struct {
-		log             *slog.Logger
+		log             domain.Logger
 		cfg             *config.Config
 		tokenRepository repository.JwtTokenRepository
 	}
 )
 
-func New(logger *slog.Logger, cfg *config.Config, tokenRepo repository.JwtTokenRepository) Service {
+func New(logger domain.Logger, cfg *config.Config, tokenRepo repository.JwtTokenRepository) Service {
 	return &service{
 		log:             logger,
 		cfg:             cfg,

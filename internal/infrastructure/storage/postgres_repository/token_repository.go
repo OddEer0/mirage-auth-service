@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/OddEer0/mirage-auth-service/internal/domain"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
@@ -41,7 +42,7 @@ const (
 )
 
 type tokenRepository struct {
-	log *slog.Logger
+	log domain.Logger
 	db  postgres.Query
 }
 
@@ -191,6 +192,6 @@ func (t tokenRepository) HasByValue(ctx context.Context, token string) (bool, er
 	return exists, nil
 }
 
-func NewTokenRepository(logger *slog.Logger, db postgres.Query) repository.JwtTokenRepository {
+func NewTokenRepository(logger domain.Logger, db postgres.Query) repository.JwtTokenRepository {
 	return &tokenRepository{db: db, log: logger}
 }

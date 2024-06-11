@@ -5,8 +5,8 @@ import (
 	appDto "github.com/OddEer0/mirage-auth-service/internal/app/app_dto"
 	tokenService "github.com/OddEer0/mirage-auth-service/internal/app/services/token_service"
 	userService "github.com/OddEer0/mirage-auth-service/internal/app/services/user_service"
+	"github.com/OddEer0/mirage-auth-service/internal/domain"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
-	"log/slog"
 )
 
 type (
@@ -23,14 +23,14 @@ type (
 	}
 
 	useCase struct {
-		log            *slog.Logger
+		log            domain.Logger
 		userService    userService.Service
 		userRepository repository.UserRepository
 		tokenService   tokenService.Service
 	}
 )
 
-func New(logger *slog.Logger, userServ userService.Service, userRepo repository.UserRepository, tokenServ tokenService.Service) UseCase {
+func New(logger domain.Logger, userServ userService.Service, userRepo repository.UserRepository, tokenServ tokenService.Service) UseCase {
 	return &useCase{
 		log:            logger,
 		userService:    userServ,

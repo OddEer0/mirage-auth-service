@@ -65,7 +65,7 @@ const (
 )
 
 type postgresRepository struct {
-	log *slog.Logger
+	log domain.Logger
 	db  postgres.Query
 }
 
@@ -425,6 +425,6 @@ func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*mod
 	return &createdUser, nil
 }
 
-func NewUserRepository(logger *slog.Logger, db postgres.Query) repository.UserRepository {
+func NewUserRepository(logger domain.Logger, db postgres.Query) repository.UserRepository {
 	return &postgresRepository{db: db, log: logger}
 }

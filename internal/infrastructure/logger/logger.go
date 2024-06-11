@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"github.com/OddEer0/mirage-auth-service/internal/domain"
 	"io"
 	logDefault "log"
 	"log/slog"
@@ -15,9 +16,9 @@ const (
 	stdoutPath = "stdout"
 )
 
-var log *slog.Logger
+var log domain.Logger = nil
 
-func MustLoad(env string, filePath string) *slog.Logger {
+func MustLoad(env string, filePath string) domain.Logger {
 	if log != nil {
 		return log
 	}
@@ -45,22 +46,22 @@ func MustLoad(env string, filePath string) *slog.Logger {
 	return log
 }
 
-func setupLocalLog(out io.Writer) *slog.Logger {
+func setupLocalLog(out io.Writer) domain.Logger {
 	jsonHandler := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelDebug})
 	return slog.New(jsonHandler)
 }
 
-func setupDevLog(out io.Writer) *slog.Logger {
+func setupDevLog(out io.Writer) domain.Logger {
 	handler := AppLogHandler{slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelInfo})}
 	return slog.New(handler)
 }
 
-func setupProdLog(out io.Writer) *slog.Logger {
+func setupProdLog(out io.Writer) domain.Logger {
 	jsonHandler := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelError})
 	return slog.New(jsonHandler)
 }
 
-func setupTestLog(out io.Writer) *slog.Logger {
+func setupTestLog(out io.Writer) domain.Logger {
 	handler := AppLogHandler{slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelError})}
 	return slog.New(handler)
 }
