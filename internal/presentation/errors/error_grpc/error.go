@@ -17,6 +17,12 @@ func Catch(err error) error {
 			return status.Error(codes.NotFound, e.Message)
 		case domain.ErrConflictCode:
 			return status.Error(codes.AlreadyExists, e.Message)
+		case domain.ErrUnauthorizedCode:
+			return status.Error(codes.Unauthenticated, e.Message)
+		case domain.ErrForbiddenCode:
+			return status.Error(codes.PermissionDenied, e.Message)
+		case domain.ErrRequestTimeoutCode:
+			return status.Error(codes.DeadlineExceeded, e.Message)
 		}
 	}
 	return status.Error(codes.Internal, "internal error")
