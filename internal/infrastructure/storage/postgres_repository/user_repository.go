@@ -8,8 +8,8 @@ import (
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
 	domainQuery "github.com/OddEer0/mirage-auth-service/internal/domain/repository/domain_query"
+	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
 	stackTrace "github.com/OddEer0/stack-trace/stack_trace"
-	"github.com/jackc/pgx/v5"
 	"log/slog"
 )
 
@@ -66,7 +66,7 @@ const (
 
 type postgresRepository struct {
 	log *slog.Logger
-	db  *pgx.Conn
+	db  postgres.Query
 }
 
 func (p *postgresRepository) CheckUserRole(ctx context.Context, id, role string) (bool, error) {
@@ -425,6 +425,6 @@ func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*mod
 	return &createdUser, nil
 }
 
-func NewUserRepository(logger *slog.Logger, db *pgx.Conn) repository.UserRepository {
+func NewUserRepository(logger *slog.Logger, db postgres.Query) repository.UserRepository {
 	return &postgresRepository{db: db, log: logger}
 }

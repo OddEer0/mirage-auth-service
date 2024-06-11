@@ -8,7 +8,6 @@ import (
 	grpcv1AuthService "github.com/OddEer0/mirage-auth-service/internal/presentation/handler/grpcv1/grpcv1_auth_service"
 	"github.com/OddEer0/mirage-auth-service/internal/presentation/interactor"
 	authv1 "github.com/OddEer0/mirage-src/protogen/mirage_auth_service"
-	"github.com/jackc/pgx/v5"
 	"google.golang.org/grpc"
 	"log/slog"
 	"net"
@@ -18,7 +17,7 @@ func main() {
 	cfg := config.MustLoad()
 	log := logger.MustLoad(cfg.Env, cfg.Path.LogFile)
 	conn, err := postgres.Connect(cfg, log)
-	defer func(conn *pgx.Conn, ctx context.Context) {
+	defer func(conn postgres.Query, ctx context.Context) {
 		err := conn.Close(ctx)
 		if err != nil {
 			log.Error("close postgres error", slog.String("cause", err.Error()))

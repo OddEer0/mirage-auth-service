@@ -6,8 +6,8 @@ import (
 	authUseCase "github.com/OddEer0/mirage-auth-service/internal/app/usecases/auth_usecase"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/config"
+	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
 	postgresRepository "github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres_repository"
-	"github.com/jackc/pgx/v5"
 	"log/slog"
 )
 
@@ -20,7 +20,7 @@ type Dependencies struct {
 	AuthUseCase            authUseCase.UseCase
 }
 
-func New(cfg *config.Config, log *slog.Logger, db *pgx.Conn) *Dependencies {
+func New(cfg *config.Config, log *slog.Logger, db postgres.Query) *Dependencies {
 	// postgres Repository initialize
 	pgUserRepo := postgresRepository.NewUserRepository(log, db)
 	pgJwtTokenRepo := postgresRepository.NewTokenRepository(log, db)
