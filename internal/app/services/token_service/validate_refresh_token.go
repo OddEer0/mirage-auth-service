@@ -33,7 +33,7 @@ func (s *service) ValidateRefreshToken(ctx context.Context, refreshToken string)
 	return &claim.JwtUserData, nil
 }
 
-func jwtErrHandle(ctx context.Context, jwtErr *jwt.ValidationError, log *slog.Logger) error {
+func jwtErrHandle(ctx context.Context, jwtErr *jwt.ValidationError, log domain.Logger) error {
 	if jwtErr.Errors&jwt.ValidationErrorMalformed != 0 {
 		log.ErrorContext(ctx, "uncorrected jwt token")
 	} else if jwtErr.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {

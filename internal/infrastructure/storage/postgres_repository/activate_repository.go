@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/OddEer0/mirage-auth-service/internal/domain"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/repository"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
@@ -44,7 +45,7 @@ const (
 )
 
 type userActivateRepository struct {
-	log *slog.Logger
+	log domain.Logger
 	db  postgres.Query
 }
 
@@ -195,7 +196,7 @@ func (u *userActivateRepository) HasById(ctx context.Context, userId string) (bo
 	return exists, nil
 }
 
-func NewUserActivateRepository(log *slog.Logger, db postgres.Query) repository.UserActivateRepository {
+func NewUserActivateRepository(log domain.Logger, db postgres.Query) repository.UserActivateRepository {
 	return &userActivateRepository{
 		log: log,
 		db:  db,
