@@ -346,14 +346,15 @@ func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*mod
 	var createdUser model.User
 	row := p.db.QueryRow(
 		ctx,
-		createUserQuery,
+		CreateUserQuery,
 		data.Id,
 		data.Login,
 		data.Email,
 		data.Password,
 		data.Role,
 		data.IsBanned,
-		data.BanReason, data.UpdatedAt,
+		data.BanReason,
+		data.UpdatedAt,
 		data.CreatedAt,
 	)
 	err := row.Scan(

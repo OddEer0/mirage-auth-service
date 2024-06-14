@@ -1,7 +1,7 @@
 package postgresRepository
 
 const (
-	createUserQuery = `INSERT INTO users (id, login, email, password, role, isBanned, banReason, updatedAt, createdAt)
+	CreateUserQuery = `INSERT INTO users (id, login, email, password, role, isBanned, banReason, updatedAt, createdAt)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		RETURNING id, login, email, password, role, isBanned, banReason, updatedAt, createdAt;`
 	GetUserByIdQuery = `
