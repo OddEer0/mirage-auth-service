@@ -1,0 +1,12 @@
+[
+  {
+    "base_path": "internal/infrastructure",
+    "gens": [
+      {
+        "pkg": "mockgenPostgres",
+        "src": "storage/postgres/iface.go",
+        "dest": "mockgen_postgres/pg_query.go"
+      }
+    ]
+  }
+]
