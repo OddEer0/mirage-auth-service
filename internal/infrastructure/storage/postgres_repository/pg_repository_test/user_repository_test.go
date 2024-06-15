@@ -47,7 +47,7 @@ func TestUserPgRepository(t *testing.T) {
 			assert.Nil(t, userDb)
 			assert.Equal(t, err, postgresRepository.ErrUserNotFound)
 			assert.NotEmpty(t, tLog.Message)
-			assert.Equal(t, []any{postgresRepository.TraceGetById}, tLog.Stack)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoGetById}, tLog.Stack)
 			tLog.Clean()
 		})
 
@@ -58,7 +58,7 @@ func TestUserPgRepository(t *testing.T) {
 			assert.Nil(t, userDb)
 			assert.Equal(t, err, postgresRepository.ErrInternal)
 			assert.NotEmpty(t, tLog.Message)
-			assert.Equal(t, []any{postgresRepository.TraceGetById}, tLog.Stack)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoGetById}, tLog.Stack)
 			tLog.Clean()
 		})
 	})
@@ -79,7 +79,7 @@ func TestUserPgRepository(t *testing.T) {
 			assert.Nil(t, userDb)
 			assert.Equal(t, postgresRepository.ErrInternal, err)
 			assert.Equal(t,
-				[]any{postgresRepository.TraceCreate}, tLog.Stack)
+				[]any{postgresRepository.TraceUserRepoCreate}, tLog.Stack)
 			tLog.Clean()
 		})
 	})
