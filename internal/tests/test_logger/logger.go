@@ -2,52 +2,55 @@ package testLogger
 
 import (
 	"context"
-	"github.com/OddEer0/mirage-auth-service/internal/domain"
+	stacktrace "github.com/OddEer0/stack-trace/stack_trace"
 )
 
-type logger struct {
+type Logger struct {
+	Message string
+	Stack   []any
 }
 
-func (l logger) ErrorContext(ctx context.Context, message string, attrs ...any) {
-	//TODO implement me
-	panic("implement me")
+func (l *Logger) ErrorContext(ctx context.Context, message string, attrs ...any) {
+	l.Message = message
+	l.Stack = stacktrace.GetStack(ctx)
 }
 
-func (l logger) InfoContext(ctx context.Context, message string, attrs ...any) {
-	//TODO implement me
-	panic("implement me")
+func (l *Logger) InfoContext(ctx context.Context, message string, attrs ...any) {
+	l.Message = message
+	l.Stack = stacktrace.GetStack(ctx)
 }
 
-func (l logger) DebugContext(ctx context.Context, message string, attrs ...any) {
-	//TODO implement me
-	panic("implement me")
+func (l *Logger) DebugContext(ctx context.Context, message string, attrs ...any) {
+	l.Message = message
+	l.Stack = stacktrace.GetStack(ctx)
 }
 
-func (l logger) WarnContext(ctx context.Context, message string, attrs ...any) {
-	//TODO implement me
-	panic("implement me")
+func (l *Logger) WarnContext(ctx context.Context, message string, attrs ...any) {
+	l.Message = message
+	l.Stack = stacktrace.GetStack(ctx)
 }
 
-func (l logger) Error(message string, attrs ...any) {
-	//TODO implement me
-	panic("implement me")
+func (l *Logger) Error(message string, attrs ...any) {
+	l.Message = message
 }
 
-func (l logger) Info(message string, attrs ...any) {
-	//TODO implement me
-	panic("implement me")
+func (l *Logger) Info(message string, attrs ...any) {
+	l.Message = message
 }
 
-func (l logger) Warn(message string, attrs ...any) {
-	//TODO implement me
-	panic("implement me")
+func (l *Logger) Warn(message string, attrs ...any) {
+	l.Message = message
 }
 
-func (l logger) Debug(message string, attrs ...any) {
-	//TODO implement me
-	panic("implement me")
+func (l *Logger) Debug(message string, attrs ...any) {
+	l.Message = message
 }
 
-func New() domain.Logger {
-	return &logger{}
+func (l *Logger) Clean() {
+	l.Message = ""
+	l.Stack = nil
+}
+
+func New() *Logger {
+	return &Logger{}
 }

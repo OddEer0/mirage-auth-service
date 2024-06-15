@@ -30,6 +30,8 @@ func PgxConnMock(ctrl *gomock.Controller, mockPgData *Postgres) *mockgenPostgres
 		Return(PgMockRow{
 			Data: []any{mockUserData.CreateUser1Res.Id, mockUserData.CreateUser1Res.Login, mockUserData.CreateUser1Res.Email, mockUserData.CreateUser1Res.Password, mockUserData.CreateUser1Res.Role, mockUserData.CreateUser1Res.IsBanned, mockUserData.CreateUser1Res.BanReason, mockUserData.CreateUser1Res.UpdatedAt, mockUserData.CreateUser1Res.CreatedAt},
 		})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CreateUserQuery, mockUserData.InternalUser.Id, mockUserData.InternalUser.Login, mockUserData.InternalUser.Email, mockUserData.InternalUser.Password, mockUserData.InternalUser.Role, mockUserData.InternalUser.IsBanned, mockUserData.InternalUser.BanReason, mockUserData.InternalUser.UpdatedAt, mockUserData.InternalUser.CreatedAt).
+		Return(PgMockRowError{err: errors.New("internal")})
 
 	return mockDb
 }
