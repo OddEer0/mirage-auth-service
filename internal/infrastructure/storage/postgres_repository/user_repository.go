@@ -23,7 +23,7 @@ func (p *userRepository) CheckUserRole(ctx context.Context, id, role string) (bo
 	defer stackTrace.Done(ctx)
 
 	var exists bool
-	err := p.db.QueryRow(ctx, checkUserRoleQuery, id, role).Scan(&exists)
+	err := p.db.QueryRow(ctx, CheckUserRoleQuery, id, role).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return exists, nil
@@ -38,7 +38,7 @@ func (p *userRepository) GetByLogin(ctx context.Context, login string) (*model.U
 	stackTrace.Add(ctx, TraceUserRepoGetByLogin)
 	defer stackTrace.Done(ctx)
 
-	row := p.db.QueryRow(ctx, getUserByLoginQuery, login)
+	row := p.db.QueryRow(ctx, GetUserByLoginQuery, login)
 	var user model.User
 	err := row.Scan(&user.Id, &user.Login, &user.Email, &user.Password, &user.Role, &user.IsBanned, &user.BanReason, &user.UpdatedAt, &user.CreatedAt)
 	if err != nil {
@@ -132,7 +132,7 @@ func (p *userRepository) Delete(ctx context.Context, id string) error {
 		return ErrUserNotFound
 	}
 
-	_, err = p.db.Exec(ctx, deleteUserById, id)
+	_, err = p.db.Exec(ctx, DeleteUserById, id)
 	if err != nil {
 		p.log.ErrorContext(ctx, "Delete query error", slog.Any("cause", err), slog.String("id", id))
 		return ErrInternal
@@ -145,7 +145,7 @@ func (p *userRepository) UpdateById(ctx context.Context, user *model.User) (*mod
 	stackTrace.Add(ctx, TraceUserRepoUpdateById)
 	defer stackTrace.Done(ctx)
 
-	row := p.db.QueryRow(ctx, updateUserById, user.Id, user.Login, user.Email, user.Password, user.Role, user.IsBanned, user.BanReason, user.UpdatedAt)
+	row := p.db.QueryRow(ctx, UpdateUserById, user.Id, user.Login, user.Email, user.Password, user.Role, user.IsBanned, user.BanReason, user.UpdatedAt)
 	updatedUser := &model.User{}
 	err := row.Scan(
 		&updatedUser.Id,
@@ -175,7 +175,7 @@ func (p *userRepository) UpdateRoleById(ctx context.Context, id string, role str
 	stackTrace.Add(ctx, TraceUserRepoUpdateRoleById)
 	defer stackTrace.Done(ctx)
 
-	row := p.db.QueryRow(ctx, updateUserRoleById, id, role)
+	row := p.db.QueryRow(ctx, UpdateUserRoleById, id, role)
 	updatedUser := &model.User{}
 	err := row.Scan(
 		&updatedUser.Id,
@@ -205,7 +205,7 @@ func (p *userRepository) UpdatePasswordById(ctx context.Context, id string, pass
 	stackTrace.Add(ctx, TraceUserRepoUpdatePasswordById)
 	defer stackTrace.Done(ctx)
 
-	row := p.db.QueryRow(ctx, updateUserPasswordById, id, password)
+	row := p.db.QueryRow(ctx, UpdateUserPasswordById, id, password)
 	updatedUser := &model.User{}
 	err := row.Scan(
 		&updatedUser.Id,
@@ -235,7 +235,7 @@ func (p *userRepository) BanUserById(ctx context.Context, id string, banReason s
 	stackTrace.Add(ctx, TraceUserRepoBanUserById)
 	defer stackTrace.Done(ctx)
 
-	row := p.db.QueryRow(ctx, updateUserBanById, id, true, banReason)
+	row := p.db.QueryRow(ctx, UpdateUserBanById, id, true, banReason)
 	updatedUser := &model.User{}
 	err := row.Scan(
 		&updatedUser.Id,
@@ -266,7 +266,7 @@ func (p *userRepository) UnbanUserById(ctx context.Context, id string) (*model.U
 	stackTrace.Add(ctx, TraceUserRepoUnbanUserById)
 	defer stackTrace.Done(ctx)
 
-	row := p.db.QueryRow(ctx, updateUserBanById, id, false, nil)
+	row := p.db.QueryRow(ctx, UpdateUserBanById, id, false, nil)
 	updatedUser := &model.User{}
 	err := row.Scan(
 		&updatedUser.Id,
@@ -297,7 +297,7 @@ func (p *userRepository) HasUserById(ctx context.Context, id string) (bool, erro
 	defer stackTrace.Done(ctx)
 
 	var exists bool
-	err := p.db.QueryRow(ctx, hasUserByIdQuery, id).Scan(&exists)
+	err := p.db.QueryRow(ctx, HasUserByIdQuery, id).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return exists, nil
@@ -312,7 +312,7 @@ func (p *userRepository) HasUserByLogin(ctx context.Context, login string) (bool
 	stackTrace.Add(ctx, TraceUserRepoHasUserByLogin)
 	defer stackTrace.Done(ctx)
 	var exists bool
-	err := p.db.QueryRow(ctx, hasUserByLoginQuery, login).Scan(&exists)
+	err := p.db.QueryRow(ctx, HasUserByLoginQuery, login).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return exists, nil
@@ -328,7 +328,7 @@ func (p *userRepository) HasUserByEmail(ctx context.Context, email string) (bool
 	defer stackTrace.Done(ctx)
 
 	var exists bool
-	err := p.db.QueryRow(ctx, hasUserByEmailQuery, "email", email).Scan(&exists)
+	err := p.db.QueryRow(ctx, HasUserByEmailQuery, "email", email).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return exists, nil

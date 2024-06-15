@@ -63,6 +63,48 @@ func TestUserPgRepository(t *testing.T) {
 		})
 	})
 
+	t.Run("Testing GetByLogin", func(t *testing.T) {
+		t.Run("Should correct work", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.CorrectUser1
+			userDb, err := userRepo.GetByLogin(ctx, user.Login)
+			require.NoError(t, err)
+			assert.Equal(t, user, userDb)
+
+			user = mockUserData.BannedUser1
+			userDb, err = userRepo.GetByLogin(ctx, user.Login)
+			require.NoError(t, err)
+			assert.Equal(t, user, userDb)
+
+			user = mockUserData.AdminUser1
+			userDb, err = userRepo.GetByLogin(ctx, user.Login)
+			require.NoError(t, err)
+			assert.Equal(t, user, userDb)
+		})
+
+		t.Run("Should not found", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.NotFoundUser
+			userDb, err := userRepo.GetByLogin(ctx, user.Login)
+			assert.Nil(t, userDb)
+			assert.Equal(t, err, postgresRepository.ErrUserNotFound)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoGetByLogin}, tLog.Stack)
+			tLog.Clean()
+		})
+
+		t.Run("Should internal", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.InternalUser
+			userDb, err := userRepo.GetByLogin(ctx, user.Login)
+			assert.Nil(t, userDb)
+			assert.Equal(t, err, postgresRepository.ErrInternal)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoGetByLogin}, tLog.Stack)
+			tLog.Clean()
+		})
+	})
+
 	t.Run("Testing Create", func(t *testing.T) {
 		t.Run("Should correct create user", func(t *testing.T) {
 			ctx := testCtx.New()
