@@ -13,13 +13,13 @@ import (
 	"log/slog"
 )
 
-type postgresRepository struct {
+type userRepository struct {
 	log domain.Logger
 	db  postgres.Query
 }
 
-func (p *postgresRepository) CheckUserRole(ctx context.Context, id, role string) (bool, error) {
-	stackTrace.Add(ctx, TraceCheckUserRole)
+func (p *userRepository) CheckUserRole(ctx context.Context, id, role string) (bool, error) {
+	stackTrace.Add(ctx, TraceUserRepoCheckUserRole)
 	defer stackTrace.Done(ctx)
 
 	var exists bool
@@ -34,8 +34,8 @@ func (p *postgresRepository) CheckUserRole(ctx context.Context, id, role string)
 	return exists, nil
 }
 
-func (p *postgresRepository) GetByLogin(ctx context.Context, login string) (*model.User, error) {
-	stackTrace.Add(ctx, TraceGetByLogin)
+func (p *userRepository) GetByLogin(ctx context.Context, login string) (*model.User, error) {
+	stackTrace.Add(ctx, TraceUserRepoGetByLogin)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, getUserByLoginQuery, login)
@@ -52,8 +52,8 @@ func (p *postgresRepository) GetByLogin(ctx context.Context, login string) (*mod
 	return &user, nil
 }
 
-func (p *postgresRepository) GetById(ctx context.Context, id string) (*model.User, error) {
-	stackTrace.Add(ctx, TraceGetById)
+func (p *userRepository) GetById(ctx context.Context, id string) (*model.User, error) {
+	stackTrace.Add(ctx, TraceUserRepoGetById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, GetUserByIdQuery, id)
@@ -70,8 +70,8 @@ func (p *postgresRepository) GetById(ctx context.Context, id string) (*model.Use
 	return &user, nil
 }
 
-func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*model.User, uint, error) {
-	stackTrace.Add(ctx, TraceGetByQuery)
+func (p *userRepository) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*model.User, uint, error) {
+	stackTrace.Add(ctx, TraceUserRepoGetByQuery)
 	defer stackTrace.Done(ctx)
 
 	offset := query.PaginationQuery.PageCount * (query.PaginationQuery.CurrentPage - 1)
@@ -118,8 +118,8 @@ func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.
 	return users, pageCount, nil
 }
 
-func (p *postgresRepository) Delete(ctx context.Context, id string) error {
-	stackTrace.Add(ctx, TraceDelete)
+func (p *userRepository) Delete(ctx context.Context, id string) error {
+	stackTrace.Add(ctx, TraceUserRepoDelete)
 	defer stackTrace.Done(ctx)
 
 	has, err := p.HasUserById(ctx, id)
@@ -141,8 +141,8 @@ func (p *postgresRepository) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (p *postgresRepository) UpdateById(ctx context.Context, user *model.User) (*model.User, error) {
-	stackTrace.Add(ctx, TraceUpdateById)
+func (p *userRepository) UpdateById(ctx context.Context, user *model.User) (*model.User, error) {
+	stackTrace.Add(ctx, TraceUserRepoUpdateById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserById, user.Id, user.Login, user.Email, user.Password, user.Role, user.IsBanned, user.BanReason, user.UpdatedAt)
@@ -171,8 +171,8 @@ func (p *postgresRepository) UpdateById(ctx context.Context, user *model.User) (
 	return updatedUser, nil
 }
 
-func (p *postgresRepository) UpdateRoleById(ctx context.Context, id string, role string) (*model.User, error) {
-	stackTrace.Add(ctx, TraceUpdateRoleById)
+func (p *userRepository) UpdateRoleById(ctx context.Context, id string, role string) (*model.User, error) {
+	stackTrace.Add(ctx, TraceUserRepoUpdateRoleById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserRoleById, id, role)
@@ -201,8 +201,8 @@ func (p *postgresRepository) UpdateRoleById(ctx context.Context, id string, role
 	return updatedUser, nil
 }
 
-func (p *postgresRepository) UpdatePasswordById(ctx context.Context, id string, password string) (*model.User, error) {
-	stackTrace.Add(ctx, TraceUpdatePasswordById)
+func (p *userRepository) UpdatePasswordById(ctx context.Context, id string, password string) (*model.User, error) {
+	stackTrace.Add(ctx, TraceUserRepoUpdatePasswordById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserPasswordById, id, password)
@@ -231,8 +231,8 @@ func (p *postgresRepository) UpdatePasswordById(ctx context.Context, id string, 
 	return updatedUser, nil
 }
 
-func (p *postgresRepository) BanUserById(ctx context.Context, id string, banReason string) (*model.User, error) {
-	stackTrace.Add(ctx, TraceBanUserById)
+func (p *userRepository) BanUserById(ctx context.Context, id string, banReason string) (*model.User, error) {
+	stackTrace.Add(ctx, TraceUserRepoBanUserById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserBanById, id, true, banReason)
@@ -262,8 +262,8 @@ func (p *postgresRepository) BanUserById(ctx context.Context, id string, banReas
 
 }
 
-func (p *postgresRepository) UnbanUserById(ctx context.Context, id string) (*model.User, error) {
-	stackTrace.Add(ctx, TraceUnbanUserById)
+func (p *userRepository) UnbanUserById(ctx context.Context, id string) (*model.User, error) {
+	stackTrace.Add(ctx, TraceUserRepoUnbanUserById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserBanById, id, false, nil)
@@ -292,8 +292,8 @@ func (p *postgresRepository) UnbanUserById(ctx context.Context, id string) (*mod
 	return updatedUser, nil
 }
 
-func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, error) {
-	stackTrace.Add(ctx, TraceHasUserById)
+func (p *userRepository) HasUserById(ctx context.Context, id string) (bool, error) {
+	stackTrace.Add(ctx, TraceUserRepoHasUserById)
 	defer stackTrace.Done(ctx)
 
 	var exists bool
@@ -308,8 +308,8 @@ func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, 
 	return exists, nil
 }
 
-func (p *postgresRepository) HasUserByLogin(ctx context.Context, login string) (bool, error) {
-	stackTrace.Add(ctx, TraceHasUserByLogin)
+func (p *userRepository) HasUserByLogin(ctx context.Context, login string) (bool, error) {
+	stackTrace.Add(ctx, TraceUserRepoHasUserByLogin)
 	defer stackTrace.Done(ctx)
 	var exists bool
 	err := p.db.QueryRow(ctx, hasUserByLoginQuery, login).Scan(&exists)
@@ -323,8 +323,8 @@ func (p *postgresRepository) HasUserByLogin(ctx context.Context, login string) (
 	return exists, nil
 }
 
-func (p *postgresRepository) HasUserByEmail(ctx context.Context, email string) (bool, error) {
-	stackTrace.Add(ctx, TraceHasUserByEmail)
+func (p *userRepository) HasUserByEmail(ctx context.Context, email string) (bool, error) {
+	stackTrace.Add(ctx, TraceUserRepoHasUserByEmail)
 	defer stackTrace.Done(ctx)
 
 	var exists bool
@@ -339,8 +339,8 @@ func (p *postgresRepository) HasUserByEmail(ctx context.Context, email string) (
 	return exists, nil
 }
 
-func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*model.User, error) {
-	stackTrace.Add(ctx, TraceCreate)
+func (p *userRepository) Create(ctx context.Context, data *model.User) (*model.User, error) {
+	stackTrace.Add(ctx, TraceUserRepoCreate)
 	defer stackTrace.Done(ctx)
 
 	var createdUser model.User
@@ -376,5 +376,5 @@ func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*mod
 }
 
 func NewUserRepository(logger domain.Logger, db postgres.Query) repository.UserRepository {
-	return &postgresRepository{db: db, log: logger}
+	return &userRepository{db: db, log: logger}
 }

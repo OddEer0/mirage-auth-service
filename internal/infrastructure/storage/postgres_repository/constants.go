@@ -11,20 +11,20 @@ var (
 	ErrUserNotFound         = domain.NewErr(domain.ErrNotFoundCode, "user not found")
 	ErrInternal             = domain.NewErr(domain.ErrInternalCode, "internal error")
 
-	TraceGetById            = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "GetById"}
-	TraceGetByLogin         = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "GetByLogin"}
-	TraceCreate             = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "Create"}
-	TraceCheckUserRole      = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "CheckUserRole"}
-	TraceGetByQuery         = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "GetByQuery"}
-	TraceDelete             = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "Delete"}
-	TraceUpdateById         = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "UpdateById"}
-	TraceUpdateRoleById     = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "UpdateRoleById"}
-	TraceUpdatePasswordById = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "UpdatePasswordById"}
-	TraceBanUserById        = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "BanUserById"}
-	TraceUnbanUserById      = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "UnbanUserById"}
-	TraceHasUserById        = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "HasUserById"}
-	TraceHasUserByLogin     = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "HasUserByLogin"}
-	TraceHasUserByEmail     = stacktrace.Method{Package: "postgresRepository", Type: "postgresRepository", Method: "HasUserByEmail"}
+	TraceUserRepoGetById            = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "GetById"}
+	TraceUserRepoGetByLogin         = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "GetByLogin"}
+	TraceUserRepoCreate             = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "Create"}
+	TraceUserRepoCheckUserRole      = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "CheckUserRole"}
+	TraceUserRepoGetByQuery         = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "GetByQuery"}
+	TraceUserRepoDelete             = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "Delete"}
+	TraceUserRepoUpdateById         = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "UpdateById"}
+	TraceUserRepoUpdateRoleById     = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "UpdateRoleById"}
+	TraceUserRepoUpdatePasswordById = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "UpdatePasswordById"}
+	TraceUserRepoBanUserById        = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "BanUserById"}
+	TraceUserRepoUnbanUserById      = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "UnbanUserById"}
+	TraceUserRepoHasUserById        = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "HasUserById"}
+	TraceUserRepoHasUserByLogin     = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "HasUserByLogin"}
+	TraceUserRepoHasUserByEmail     = stacktrace.Method{Package: "postgresRepository", Type: "userRepository", Method: "HasUserByEmail"}
 )
 
 const (
