@@ -13,6 +13,8 @@ type (
 		CorrectUser1   *model.User
 		BannedUser1    *model.User
 		CreateUser1Res *model.User
+		NotFoundUser   *model.User
+		InternalUser   *model.User
 	}
 
 	Tokens struct {
@@ -81,6 +83,16 @@ func PostgresData() *Postgres {
 				BanReason: nil,
 				UpdatedAt: time.Now(),
 				CreatedAt: time.Now(),
+			},
+			NotFoundUser: &model.User{
+				Id:    "not-found",
+				Login: "not-found",
+				Email: "not-found",
+			},
+			InternalUser: &model.User{
+				Id:    "internal",
+				Login: "internal",
+				Email: "internal",
 			},
 		},
 	}

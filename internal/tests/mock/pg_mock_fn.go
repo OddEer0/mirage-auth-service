@@ -9,7 +9,15 @@ type (
 	PgMockRow struct {
 		Data []any
 	}
+
+	PgMockRowError struct {
+		err error
+	}
 )
+
+func (m PgMockRowError) Scan(dest ...any) error {
+	return m.err
+}
 
 func (m PgMockRow) Scan(dest ...any) error {
 	if len(m.Data) != len(dest) {
