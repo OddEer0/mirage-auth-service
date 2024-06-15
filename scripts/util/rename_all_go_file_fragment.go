@@ -1,7 +1,8 @@
-package scripts
+package util
 
 import (
 	"fmt"
+	"github.com/OddEer0/mirage-auth-service/scripts"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -25,20 +26,8 @@ func replaceInFile(filePath, oldString, newString string) error {
 }
 
 func RenameAllGoCodeFragment(from, to string) {
-	execPath, err := os.Executable()
-	if err != nil {
-		fmt.Printf("Cannot get executable path: %v\n", err)
-		return
-	}
-
-	absExecPath, err := filepath.Abs(execPath)
-	if err != nil {
-		fmt.Printf("Cannot get absolute path: %v\n", err)
-		return
-	}
-
-	root := filepath.Dir(absExecPath)
-	err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+	root := scripts.GetAbsPathDir()
+	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() && filepath.Ext(path) == ".go" {
 			err := replaceInFile(path, from, to)
 			if err != nil {
