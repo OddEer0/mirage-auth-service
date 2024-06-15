@@ -125,4 +125,40 @@ func TestUserPgRepository(t *testing.T) {
 			tLog.Clean()
 		})
 	})
+
+	t.Run("Testing CheckUserRole", func(t *testing.T) {
+		t.Run("Should correct check", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.CorrectUser1
+			adminUser := mockUserData.AdminUser1
+			check, err := userRepo.CheckUserRole(ctx, user.Id, user.Role)
+			require.NoError(t, err)
+			assert.True(t, check)
+			check, err = userRepo.CheckUserRole(ctx, adminUser.Id, adminUser.Role)
+			require.NoError(t, err)
+			assert.True(t, check)
+			check, err = userRepo.CheckUserRole(ctx, user.Id, adminUser.Role)
+			require.NoError(t, err)
+			assert.False(t, check)
+			check, err = userRepo.CheckUserRole(ctx, adminUser.Id, user.Role)
+			require.NoError(t, err)
+			assert.False(t, check)
+		})
+
+		t.Run("Should not found", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.NotFoundUser
+			check, err := userRepo.CheckUserRole(ctx, user.Id, user.Role)
+			assert.False(t, check)
+			assert.Equal(t, postgresRepository.ErrUserNotFound, err)
+		})
+
+		t.Run("Should internal", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.InternalUser
+			check, err := userRepo.CheckUserRole(ctx, user.Id, user.Role)
+			assert.False(t, check)
+			assert.Equal(t, postgresRepository.ErrInternal, err)
+		})
+	})
 }

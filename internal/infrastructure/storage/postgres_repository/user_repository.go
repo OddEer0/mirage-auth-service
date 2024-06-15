@@ -26,10 +26,10 @@ func (p *userRepository) CheckUserRole(ctx context.Context, id, role string) (bo
 	err := p.db.QueryRow(ctx, CheckUserRoleQuery, id, role).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return exists, nil
+			return exists, ErrUserNotFound
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("id", id))
-		return exists, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+		return exists, ErrInternal
 	}
 	return exists, nil
 }

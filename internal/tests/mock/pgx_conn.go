@@ -38,6 +38,22 @@ func PgxConnMock(ctrl *gomock.Controller, mockPgData *Postgres) *mockgenPostgres
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.GetUserByIdQuery, mockUserData.NotFoundUser.Id).Return(PgMockRowError{err: sql.ErrNoRows})
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.GetUserByIdQuery, mockUserData.InternalUser.Id).Return(PgMockRowError{err: errors.New("internal")})
 
+	// CheckUserRole
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CheckUserRoleQuery, mockUserData.AdminUser1.Id, mockUserData.AdminUser1.Role).Return(PgMockRow{
+		Data: []any{true},
+	})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CheckUserRoleQuery, mockUserData.CorrectUser1.Id, mockUserData.CorrectUser1.Role).Return(PgMockRow{
+		Data: []any{true},
+	})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CheckUserRoleQuery, mockUserData.AdminUser1.Id, mockUserData.CorrectUser1.Role).Return(PgMockRow{
+		Data: []any{false},
+	})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CheckUserRoleQuery, mockUserData.CorrectUser1.Id, mockUserData.AdminUser1.Role).Return(PgMockRow{
+		Data: []any{false},
+	})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CheckUserRoleQuery, mockUserData.NotFoundUser.Id, mockUserData.NotFoundUser.Role).Return(PgMockRowError{err: sql.ErrNoRows})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CheckUserRoleQuery, mockUserData.InternalUser.Id, mockUserData.InternalUser.Role).Return(PgMockRowError{err: errors.New("internal")})
+
 	// Create
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CreateUserQuery, mockUserData.CreateUser1Res.Id, mockUserData.CreateUser1Res.Login, mockUserData.CreateUser1Res.Email, mockUserData.CreateUser1Res.Password, mockUserData.CreateUser1Res.Role, mockUserData.CreateUser1Res.IsBanned, mockUserData.CreateUser1Res.BanReason, mockUserData.CreateUser1Res.UpdatedAt, mockUserData.CreateUser1Res.CreatedAt).
 		Return(PgMockRow{
