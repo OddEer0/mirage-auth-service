@@ -1,10 +1,10 @@
 package pg_repository_test
 
 import (
-	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/logger"
 	postgresRepository "github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres_repository"
 	"github.com/OddEer0/mirage-auth-service/internal/tests/mock"
 	testCtx "github.com/OddEer0/mirage-auth-service/internal/tests/test_ctx"
+	testLogger "github.com/OddEer0/mirage-auth-service/internal/tests/test_logger"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -18,7 +18,7 @@ func TestUserPgRepository(t *testing.T) {
 	defer ctrl.Finish()
 	mockDb := mock.PgxConnMock(ctrl, mockPgData)
 
-	tLog := logger.MustLoad("test", "")
+	tLog := testLogger.New()
 	userRepo := postgresRepository.NewUserRepository(tLog, mockDb)
 
 	t.Run("Testing GetById", func(t *testing.T) {
@@ -46,6 +46,9 @@ func TestUserPgRepository(t *testing.T) {
 			userDb, err := userRepo.GetById(ctx, user.Id)
 			assert.Nil(t, userDb)
 			assert.Equal(t, err, postgresRepository.ErrUserNotFound)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceGetById}, tLog.Stack)
+			tLog.Clean()
 		})
 
 		t.Run("Should internal", func(t *testing.T) {
@@ -54,6 +57,9 @@ func TestUserPgRepository(t *testing.T) {
 			userDb, err := userRepo.GetById(ctx, user.Id)
 			assert.Nil(t, userDb)
 			assert.Equal(t, err, postgresRepository.ErrInternal)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceGetById}, tLog.Stack)
+			tLog.Clean()
 		})
 	})
 
@@ -67,11 +73,14 @@ func TestUserPgRepository(t *testing.T) {
 		})
 
 		t.Run("Should internal user", func(t *testing.T) {
-
+			ctx := testCtx.New()
+			createUser := mockUserData.InternalUser
+			userDb, err := userRepo.Create(ctx, createUser)
+			assert.Nil(t, userDb)
+			assert.Equal(t, postgresRepository.ErrInternal, err)
+			assert.Equal(t,
+				[]any{postgresRepository.TraceCreate}, tLog.Stack)
+			tLog.Clean()
 		})
 	})
-
-	//t.Run("Should correct Delete", func(t *testing.T) {
-	//
-	//})
 }

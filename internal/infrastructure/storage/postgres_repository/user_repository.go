@@ -19,11 +19,11 @@ type postgresRepository struct {
 }
 
 func (p *postgresRepository) CheckUserRole(ctx context.Context, id, role string) (bool, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: CheckUserRole")
+	stackTrace.Add(ctx, TraceCheckUserRole)
 	defer stackTrace.Done(ctx)
 
 	var exists bool
-	err := p.db.QueryRow(ctx, checkUserRoleQuery, id).Scan(&exists)
+	err := p.db.QueryRow(ctx, checkUserRoleQuery, id, role).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return exists, nil
@@ -35,7 +35,7 @@ func (p *postgresRepository) CheckUserRole(ctx context.Context, id, role string)
 }
 
 func (p *postgresRepository) GetByLogin(ctx context.Context, login string) (*model.User, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: GetByLogin")
+	stackTrace.Add(ctx, TraceGetByLogin)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, getUserByLoginQuery, login)
@@ -43,17 +43,17 @@ func (p *postgresRepository) GetByLogin(ctx context.Context, login string) (*mod
 	err := row.Scan(&user.Id, &user.Login, &user.Email, &user.Password, &user.Role, &user.IsBanned, &user.BanReason, &user.UpdatedAt, &user.CreatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			p.log.ErrorContext(ctx, "not found user by id", slog.Any("cause", err), slog.String("login", login))
+			p.log.ErrorContext(ctx, LogNoRowMessage, slog.Any("cause", err), slog.String("login", login))
 			return nil, ErrUserNotFound
 		}
-		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("login", login))
+		p.log.ErrorContext(ctx, LogDbQueryMessage, slog.Any("cause", err), slog.String("login", login))
 		return nil, ErrInternal
 	}
 	return &user, nil
 }
 
 func (p *postgresRepository) GetById(ctx context.Context, id string) (*model.User, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: GetById")
+	stackTrace.Add(ctx, TraceGetById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, GetUserByIdQuery, id)
@@ -61,17 +61,17 @@ func (p *postgresRepository) GetById(ctx context.Context, id string) (*model.Use
 	err := row.Scan(&user.Id, &user.Login, &user.Email, &user.Password, &user.Role, &user.IsBanned, &user.BanReason, &user.UpdatedAt, &user.CreatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			p.log.ErrorContext(ctx, "not found user by id", slog.Any("cause", err), slog.String("id", id))
+			p.log.ErrorContext(ctx, LogNoRowMessage, slog.Any("cause", err), slog.String("id", id))
 			return nil, ErrUserNotFound
 		}
-		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("id", id))
+		p.log.ErrorContext(ctx, LogDbQueryMessage, slog.Any("cause", err), slog.String("id", id))
 		return nil, ErrInternal
 	}
 	return &user, nil
 }
 
 func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.UserQueryRequest) ([]*model.User, uint, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: GetByQuery")
+	stackTrace.Add(ctx, TraceGetByQuery)
 	defer stackTrace.Done(ctx)
 
 	offset := query.PaginationQuery.PageCount * (query.PaginationQuery.CurrentPage - 1)
@@ -119,7 +119,7 @@ func (p *postgresRepository) GetByQuery(ctx context.Context, query *domainQuery.
 }
 
 func (p *postgresRepository) Delete(ctx context.Context, id string) error {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: Delete")
+	stackTrace.Add(ctx, TraceDelete)
 	defer stackTrace.Done(ctx)
 
 	has, err := p.HasUserById(ctx, id)
@@ -142,7 +142,7 @@ func (p *postgresRepository) Delete(ctx context.Context, id string) error {
 }
 
 func (p *postgresRepository) UpdateById(ctx context.Context, user *model.User) (*model.User, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: UpdateById")
+	stackTrace.Add(ctx, TraceUpdateById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserById, user.Id, user.Login, user.Email, user.Password, user.Role, user.IsBanned, user.BanReason, user.UpdatedAt)
@@ -172,7 +172,7 @@ func (p *postgresRepository) UpdateById(ctx context.Context, user *model.User) (
 }
 
 func (p *postgresRepository) UpdateRoleById(ctx context.Context, id string, role string) (*model.User, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: UpdateRoleById")
+	stackTrace.Add(ctx, TraceUpdateRoleById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserRoleById, id, role)
@@ -202,7 +202,7 @@ func (p *postgresRepository) UpdateRoleById(ctx context.Context, id string, role
 }
 
 func (p *postgresRepository) UpdatePasswordById(ctx context.Context, id string, password string) (*model.User, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: UpdatePasswordById")
+	stackTrace.Add(ctx, TraceUpdatePasswordById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserPasswordById, id, password)
@@ -232,7 +232,7 @@ func (p *postgresRepository) UpdatePasswordById(ctx context.Context, id string, 
 }
 
 func (p *postgresRepository) BanUserById(ctx context.Context, id string, banReason string) (*model.User, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: BanUserById")
+	stackTrace.Add(ctx, TraceBanUserById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserBanById, id, true, banReason)
@@ -263,7 +263,7 @@ func (p *postgresRepository) BanUserById(ctx context.Context, id string, banReas
 }
 
 func (p *postgresRepository) UnbanUserById(ctx context.Context, id string) (*model.User, error) {
-	stackTrace.Add(ctx, "package: userRepository, type: postgresRepository, method: UnbanUserById")
+	stackTrace.Add(ctx, TraceUnbanUserById)
 	defer stackTrace.Done(ctx)
 
 	row := p.db.QueryRow(ctx, updateUserBanById, id, false, nil)
@@ -293,7 +293,7 @@ func (p *postgresRepository) UnbanUserById(ctx context.Context, id string) (*mod
 }
 
 func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, error) {
-	stackTrace.Add(ctx, "package: postgresRepository, type: postgresRepository, method: HasUserByLogin")
+	stackTrace.Add(ctx, TraceHasUserById)
 	defer stackTrace.Done(ctx)
 
 	var exists bool
@@ -309,7 +309,7 @@ func (p *postgresRepository) HasUserById(ctx context.Context, id string) (bool, 
 }
 
 func (p *postgresRepository) HasUserByLogin(ctx context.Context, login string) (bool, error) {
-	stackTrace.Add(ctx, "package: postgresRepository, type: postgresRepository, method: HasUserByLogin")
+	stackTrace.Add(ctx, TraceHasUserByLogin)
 	defer stackTrace.Done(ctx)
 	var exists bool
 	err := p.db.QueryRow(ctx, hasUserByLoginQuery, login).Scan(&exists)
@@ -324,7 +324,7 @@ func (p *postgresRepository) HasUserByLogin(ctx context.Context, login string) (
 }
 
 func (p *postgresRepository) HasUserByEmail(ctx context.Context, email string) (bool, error) {
-	stackTrace.Add(ctx, "package: postgresRepository, type: postgresRepository, method: HasUserByLogin")
+	stackTrace.Add(ctx, TraceHasUserByEmail)
 	defer stackTrace.Done(ctx)
 
 	var exists bool
@@ -340,7 +340,7 @@ func (p *postgresRepository) HasUserByEmail(ctx context.Context, email string) (
 }
 
 func (p *postgresRepository) Create(ctx context.Context, data *model.User) (*model.User, error) {
-	stackTrace.Add(ctx, "package: postgresRepository, type: postgresRepository, method: Create")
+	stackTrace.Add(ctx, TraceCreate)
 	defer stackTrace.Done(ctx)
 
 	var createdUser model.User
