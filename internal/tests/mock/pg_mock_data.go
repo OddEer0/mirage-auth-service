@@ -14,6 +14,7 @@ type (
 		CreateUser1Res *model.User
 		NotFoundUser   *model.User
 		InternalUser   *model.User
+		InternalUser2  *model.User
 	}
 
 	Tokens struct {
@@ -92,6 +93,11 @@ func PostgresData() *Postgres {
 				Id:    "internal",
 				Login: "internal",
 				Email: "internal",
+			},
+			InternalUser2: &model.User{
+				Id:    "internal2",
+				Login: "internal2",
+				Email: "internal2",
 			},
 		},
 	}

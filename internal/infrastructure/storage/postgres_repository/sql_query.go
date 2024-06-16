@@ -21,7 +21,7 @@ const (
 	HasUserByEmailQuery = `
 		SELECT EXISTS(SELECT 1 FROM users WHERE email = $1);
 	`
-	DeleteUserById = `
+	DeleteUserByIdQuery = `
 		DELETE FROM users WHERE id = $1;
 	`
 	UpdateUserById = `

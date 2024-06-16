@@ -129,11 +129,11 @@ func (p *userRepository) Delete(ctx context.Context, id string) error {
 		return ErrInternal
 	}
 	if !has {
-		p.log.ErrorContext(ctx, "User not found", slog.Any("cause", err), slog.String("id", id))
+		p.log.ErrorContext(ctx, "User not found", slog.Any("cause", ErrUserNotFound), slog.String("id", id))
 		return ErrUserNotFound
 	}
 
-	_, err = p.db.Exec(ctx, DeleteUserById, id)
+	_, err = p.db.Exec(ctx, DeleteUserByIdQuery, id)
 	if err != nil {
 		p.log.ErrorContext(ctx, "Delete query error", slog.Any("cause", err), slog.String("id", id))
 		return ErrInternal
