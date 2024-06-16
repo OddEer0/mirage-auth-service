@@ -12,7 +12,7 @@ func PgxConnMock(ctrl *gomock.Controller, mockPgData *Postgres) *mockgenPostgres
 	mockUserData := mockPgData.User
 	mockDb := mockgenPostgres.NewMockQuery(ctrl)
 
-	// GetByLogin
+	// GetUserByLogin
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.GetUserByLoginQuery, mockUserData.CorrectUser1.Login).Return(PgMockRow{
 		Data: []any{mockUserData.CorrectUser1.Id, mockUserData.CorrectUser1.Login, mockUserData.CorrectUser1.Email, mockUserData.CorrectUser1.Password, mockUserData.CorrectUser1.Role, mockUserData.CorrectUser1.IsBanned, mockUserData.CorrectUser1.BanReason, mockUserData.CorrectUser1.UpdatedAt, mockUserData.CorrectUser1.CreatedAt}},
 	)
@@ -25,7 +25,7 @@ func PgxConnMock(ctrl *gomock.Controller, mockPgData *Postgres) *mockgenPostgres
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.GetUserByLoginQuery, mockUserData.NotFoundUser.Login).Return(PgMockRowError{err: sql.ErrNoRows})
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.GetUserByLoginQuery, mockUserData.InternalUser.Login).Return(PgMockRowError{err: errors.New("internal")})
 
-	// GetById
+	// GetUserById
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.GetUserByIdQuery, mockUserData.CorrectUser1.Id).Return(PgMockRow{
 		Data: []any{mockUserData.CorrectUser1.Id, mockUserData.CorrectUser1.Login, mockUserData.CorrectUser1.Email, mockUserData.CorrectUser1.Password, mockUserData.CorrectUser1.Role, mockUserData.CorrectUser1.IsBanned, mockUserData.CorrectUser1.BanReason, mockUserData.CorrectUser1.UpdatedAt, mockUserData.CorrectUser1.CreatedAt}},
 	)
@@ -53,6 +53,32 @@ func PgxConnMock(ctrl *gomock.Controller, mockPgData *Postgres) *mockgenPostgres
 	})
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CheckUserRoleQuery, mockUserData.NotFoundUser.Id, mockUserData.NotFoundUser.Role).Return(PgMockRowError{err: sql.ErrNoRows})
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CheckUserRoleQuery, mockUserData.InternalUser.Id, mockUserData.InternalUser.Role).Return(PgMockRowError{err: errors.New("internal")})
+
+	// DeleteUserById
+	//mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.DeleteUserById, mockUserData.CorrectUser1.Id).Return(PgMockRowError{err: nil})
+	//mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.DeleteUserById, mockUserData.AdminUser1.Id).Return(PgMockRowError{err: nil})
+	//mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.DeleteUserById, mockUserData.BannedUser1.Id).Return(PgMockRowError{err: nil})
+
+	// HasUserById
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.CorrectUser1.Id).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.AdminUser1.Id).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.BannedUser1.Id).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.NotFoundUser.Id).Return(PgMockRow{Data: []any{false}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.InternalUser.Id).Return(PgMockRowError{err: errors.New("internal")})
+
+	// HasUserByLogin
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByLoginQuery, mockUserData.CorrectUser1.Login).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByLoginQuery, mockUserData.AdminUser1.Login).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByLoginQuery, mockUserData.BannedUser1.Login).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByLoginQuery, mockUserData.NotFoundUser.Login).Return(PgMockRow{Data: []any{false}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByLoginQuery, mockUserData.InternalUser.Login).Return(PgMockRowError{err: errors.New("internal")})
+
+	// HasUserByEmail
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByEmailQuery, mockUserData.CorrectUser1.Email).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByEmailQuery, mockUserData.AdminUser1.Email).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByEmailQuery, mockUserData.BannedUser1.Email).Return(PgMockRow{Data: []any{true}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByEmailQuery, mockUserData.NotFoundUser.Email).Return(PgMockRow{Data: []any{false}})
+	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByEmailQuery, mockUserData.InternalUser.Email).Return(PgMockRowError{err: errors.New("internal")})
 
 	// Create
 	mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.CreateUserQuery, mockUserData.CreateUser1Res.Id, mockUserData.CreateUser1Res.Login, mockUserData.CreateUser1Res.Email, mockUserData.CreateUser1Res.Password, mockUserData.CreateUser1Res.Role, mockUserData.CreateUser1Res.IsBanned, mockUserData.CreateUser1Res.BanReason, mockUserData.CreateUser1Res.UpdatedAt, mockUserData.CreateUser1Res.CreatedAt).

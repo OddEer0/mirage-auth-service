@@ -151,6 +151,9 @@ func TestUserPgRepository(t *testing.T) {
 			check, err := userRepo.CheckUserRole(ctx, user.Id, user.Role)
 			assert.False(t, check)
 			assert.Equal(t, postgresRepository.ErrUserNotFound, err)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoCheckUserRole}, tLog.Stack)
+			tLog.Clean()
 		})
 
 		t.Run("Should internal", func(t *testing.T) {
@@ -159,6 +162,123 @@ func TestUserPgRepository(t *testing.T) {
 			check, err := userRepo.CheckUserRole(ctx, user.Id, user.Role)
 			assert.False(t, check)
 			assert.Equal(t, postgresRepository.ErrInternal, err)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoCheckUserRole}, tLog.Stack)
+			tLog.Clean()
 		})
 	})
+
+	t.Run("Testing HasUserById", func(t *testing.T) {
+		t.Run("Should correct work", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.CorrectUser1
+			has, err := userRepo.HasUserById(ctx, user.Id)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.AdminUser1
+			has, err = userRepo.HasUserById(ctx, user.Id)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.BannedUser1
+			has, err = userRepo.HasUserById(ctx, user.Id)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.NotFoundUser
+			has, err = userRepo.HasUserById(ctx, user.Id)
+			require.NoError(t, err)
+			assert.False(t, has)
+		})
+
+		t.Run("Should internal", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.InternalUser
+			has, err := userRepo.HasUserById(ctx, user.Id)
+			assert.False(t, has)
+			assert.Equal(t, err, postgresRepository.ErrInternal)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoHasUserById}, tLog.Stack)
+			tLog.Clean()
+		})
+	})
+
+	t.Run("Testing HasUserByLogin", func(t *testing.T) {
+		t.Run("Should correct work", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.CorrectUser1
+			has, err := userRepo.HasUserByLogin(ctx, user.Login)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.AdminUser1
+			has, err = userRepo.HasUserByLogin(ctx, user.Login)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.BannedUser1
+			has, err = userRepo.HasUserByLogin(ctx, user.Login)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.NotFoundUser
+			has, err = userRepo.HasUserByLogin(ctx, user.Login)
+			require.NoError(t, err)
+			assert.False(t, has)
+		})
+
+		t.Run("Should internal", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.InternalUser
+			has, err := userRepo.HasUserByLogin(ctx, user.Login)
+			assert.False(t, has)
+			assert.Equal(t, err, postgresRepository.ErrInternal)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoHasUserByLogin}, tLog.Stack)
+			tLog.Clean()
+		})
+	})
+
+	t.Run("Testing HasUserByEmail", func(t *testing.T) {
+		t.Run("Should correct work", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.CorrectUser1
+			has, err := userRepo.HasUserByEmail(ctx, user.Email)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.AdminUser1
+			has, err = userRepo.HasUserByEmail(ctx, user.Email)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.BannedUser1
+			has, err = userRepo.HasUserByEmail(ctx, user.Email)
+			require.NoError(t, err)
+			assert.True(t, has)
+
+			user = mockUserData.NotFoundUser
+			has, err = userRepo.HasUserByEmail(ctx, user.Email)
+			require.NoError(t, err)
+			assert.False(t, has)
+		})
+
+		t.Run("Should internal", func(t *testing.T) {
+			ctx := testCtx.New()
+			user := mockUserData.InternalUser
+			has, err := userRepo.HasUserByEmail(ctx, user.Email)
+			assert.False(t, has)
+			assert.Equal(t, err, postgresRepository.ErrInternal)
+			assert.NotEmpty(t, tLog.Message)
+			assert.Equal(t, []any{postgresRepository.TraceUserRepoHasUserByEmail}, tLog.Stack)
+			tLog.Clean()
+		})
+	})
+
+	//t.Run("Testing delete", func(t *testing.T) {
+	//	t.Run("Should correct delete", func(t *testing.T) {
+	//
+	//	})
+	//})
 }

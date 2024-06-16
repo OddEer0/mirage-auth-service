@@ -26,6 +26,7 @@ func (p *userRepository) CheckUserRole(ctx context.Context, id, role string) (bo
 	err := p.db.QueryRow(ctx, CheckUserRoleQuery, id, role).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
+			p.log.ErrorContext(ctx, "User not found", slog.Any("cause", err), slog.String("id", id))
 			return exists, ErrUserNotFound
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("id", id))
@@ -303,7 +304,7 @@ func (p *userRepository) HasUserById(ctx context.Context, id string) (bool, erro
 			return exists, nil
 		}
 		p.log.ErrorContext(ctx, "Error database query", slog.Any("cause", err), slog.String("id", id))
-		return exists, domain.NewErr(domain.ErrInternalCode, domain.ErrNotFoundMessage)
+		return exists, ErrInternal
 	}
 	return exists, nil
 }
@@ -328,7 +329,7 @@ func (p *userRepository) HasUserByEmail(ctx context.Context, email string) (bool
 	defer stackTrace.Done(ctx)
 
 	var exists bool
-	err := p.db.QueryRow(ctx, HasUserByEmailQuery, "email", email).Scan(&exists)
+	err := p.db.QueryRow(ctx, HasUserByEmailQuery, email).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return exists, nil

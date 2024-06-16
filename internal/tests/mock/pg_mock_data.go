@@ -3,7 +3,6 @@ package mock
 import (
 	domainConstants "github.com/OddEer0/mirage-auth-service/internal/domain/domain_constants"
 	"github.com/OddEer0/mirage-auth-service/internal/domain/model"
-	"github.com/google/uuid"
 	"time"
 )
 
@@ -41,7 +40,7 @@ func PostgresData() *Postgres {
 	return &Postgres{
 		User: &Users{
 			CorrectUser1: &model.User{
-				Id:        uuid.New().String(),
+				Id:        "111",
 				Login:     "aboba",
 				Email:     "bibas@gmail.com",
 				Password:  "SuperSecretPass123",
@@ -52,7 +51,7 @@ func PostgresData() *Postgres {
 				CreatedAt: time.Now().AddDate(-3, 0, 0),
 			},
 			BannedUser1: &model.User{
-				Id:        uuid.New().String(),
+				Id:        "112",
 				Login:     "toxic",
 				Email:     "toxus@gmail.com",
 				Password:  "SuperToxicPass123",
@@ -63,7 +62,7 @@ func PostgresData() *Postgres {
 				CreatedAt: time.Now().AddDate(-2, 0, 0),
 			},
 			AdminUser1: &model.User{
-				Id:        uuid.New().String(),
+				Id:        "113",
 				Login:     "Marlen",
 				Email:     "merlin@gmail.com",
 				Password:  "SuperAdminPass123",
@@ -74,7 +73,7 @@ func PostgresData() *Postgres {
 				CreatedAt: time.Now().AddDate(-2, 0, 0),
 			},
 			CreateUser1Res: &model.User{
-				Id:        uuid.New().String(),
+				Id:        "114",
 				Login:     "General",
 				Email:     "qingyuan@gmail.com",
 				Password:  "SuperGeneralPass123",
