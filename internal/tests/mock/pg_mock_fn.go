@@ -11,12 +11,12 @@ type (
 	}
 
 	PgMockRowError struct {
-		err error
+		Err error
 	}
 )
 
 func (m PgMockRowError) Scan(dest ...any) error {
-	return m.err
+	return m.Err
 }
 
 func (m PgMockRow) Scan(dest ...any) error {
