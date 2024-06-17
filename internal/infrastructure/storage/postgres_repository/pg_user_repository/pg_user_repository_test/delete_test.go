@@ -2,7 +2,7 @@ package pg_user_repository_test
 
 import (
 	"errors"
-	postgresRepository "github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres_repository"
+	pgUserRepository "github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres_repository/pg_user_repository"
 	"github.com/OddEer0/mirage-auth-service/internal/tests/mock"
 	mockgenPostgres "github.com/OddEer0/mirage-auth-service/internal/tests/mockgen/mockgen_postgres"
 	testCtx "github.com/OddEer0/mirage-auth-service/internal/tests/test_ctx"
@@ -23,18 +23,18 @@ func TestDelete(t *testing.T) {
 		tLog := testLogger.New()
 		mockDb := mockgenPostgres.NewMockQuery(ctrl)
 
-		mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.CorrectUser1.Id).Return(mock.PgMockRow{Data: []any{true}})
-		mockDb.EXPECT().Exec(gomock.Any(), postgresRepository.DeleteUserByIdQuery, mockUserData.CorrectUser1.Id).Return(pgconn.CommandTag{}, nil)
-		mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.AdminUser1.Id).Return(mock.PgMockRow{Data: []any{true}})
-		mockDb.EXPECT().Exec(gomock.Any(), postgresRepository.DeleteUserByIdQuery, mockUserData.AdminUser1.Id).Return(pgconn.CommandTag{}, nil)
-		mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.BannedUser1.Id).Return(mock.PgMockRow{Data: []any{true}})
-		mockDb.EXPECT().Exec(gomock.Any(), postgresRepository.DeleteUserByIdQuery, mockUserData.BannedUser1.Id).Return(pgconn.CommandTag{}, nil)
-		mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.NotFoundUser.Id).Return(mock.PgMockRow{Data: []any{false}})
-		mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.InternalUser.Id).Return(mock.PgMockRowError{Err: errors.New("internal")})
-		mockDb.EXPECT().QueryRow(gomock.Any(), postgresRepository.HasUserByIdQuery, mockUserData.InternalUser2.Id).Return(mock.PgMockRow{Data: []any{true}})
-		mockDb.EXPECT().Exec(gomock.Any(), postgresRepository.DeleteUserByIdQuery, mockUserData.InternalUser2.Id).Return(pgconn.CommandTag{}, errors.New("internal"))
+		mockDb.EXPECT().QueryRow(gomock.Any(), pgUserRepository.HasUserByIdQuery, mockUserData.CorrectUser1.Id).Return(mock.PgMockRow{Data: []any{true}})
+		mockDb.EXPECT().Exec(gomock.Any(), pgUserRepository.DeleteUserByIdQuery, mockUserData.CorrectUser1.Id).Return(pgconn.CommandTag{}, nil)
+		mockDb.EXPECT().QueryRow(gomock.Any(), pgUserRepository.HasUserByIdQuery, mockUserData.AdminUser1.Id).Return(mock.PgMockRow{Data: []any{true}})
+		mockDb.EXPECT().Exec(gomock.Any(), pgUserRepository.DeleteUserByIdQuery, mockUserData.AdminUser1.Id).Return(pgconn.CommandTag{}, nil)
+		mockDb.EXPECT().QueryRow(gomock.Any(), pgUserRepository.HasUserByIdQuery, mockUserData.BannedUser1.Id).Return(mock.PgMockRow{Data: []any{true}})
+		mockDb.EXPECT().Exec(gomock.Any(), pgUserRepository.DeleteUserByIdQuery, mockUserData.BannedUser1.Id).Return(pgconn.CommandTag{}, nil)
+		mockDb.EXPECT().QueryRow(gomock.Any(), pgUserRepository.HasUserByIdQuery, mockUserData.NotFoundUser.Id).Return(mock.PgMockRow{Data: []any{false}})
+		mockDb.EXPECT().QueryRow(gomock.Any(), pgUserRepository.HasUserByIdQuery, mockUserData.InternalUser.Id).Return(mock.PgMockRowError{Err: errors.New("internal")})
+		mockDb.EXPECT().QueryRow(gomock.Any(), pgUserRepository.HasUserByIdQuery, mockUserData.InternalUser2.Id).Return(mock.PgMockRow{Data: []any{true}})
+		mockDb.EXPECT().Exec(gomock.Any(), pgUserRepository.DeleteUserByIdQuery, mockUserData.InternalUser2.Id).Return(pgconn.CommandTag{}, errors.New("internal"))
 
-		userRepo := postgresRepository.NewUserRepository(tLog, mockDb)
+		userRepo := pgUserRepository.New(tLog, mockDb)
 
 		t.Run("Should correct delete", func(t *testing.T) {
 			ctx := testCtx.New()
@@ -55,8 +55,8 @@ func TestDelete(t *testing.T) {
 			ctx := testCtx.New()
 			user := mockUserData.NotFoundUser
 			err := userRepo.Delete(ctx, user.Id)
-			assert.Equal(t, err, postgresRepository.ErrUserNotFound)
-			assert.Equal(t, []any{postgresRepository.TraceUserRepoDelete}, tLog.Stack)
+			assert.Equal(t, err, pgUserRepository.ErrUserNotFound)
+			assert.Equal(t, []any{pgUserRepository.TraceDelete}, tLog.Stack)
 			assert.NotEmpty(t, tLog.Message)
 			tLog.Clean()
 		})
@@ -65,15 +65,15 @@ func TestDelete(t *testing.T) {
 			ctx := testCtx.New()
 			user := mockUserData.InternalUser
 			err := userRepo.Delete(ctx, user.Id)
-			assert.Equal(t, err, postgresRepository.ErrInternal)
-			assert.Equal(t, []any{postgresRepository.TraceUserRepoDelete, postgresRepository.TraceUserRepoHasUserById}, tLog.Stack)
+			assert.Equal(t, err, pgUserRepository.ErrInternal)
+			assert.Equal(t, []any{pgUserRepository.TraceDelete, pgUserRepository.TraceHasUserById}, tLog.Stack)
 			assert.NotEmpty(t, tLog.Message)
 			tLog.Clean()
 
 			user = mockUserData.InternalUser2
 			err = userRepo.Delete(ctx, user.Id)
-			assert.Equal(t, err, postgresRepository.ErrInternal)
-			assert.Equal(t, []any{postgresRepository.TraceUserRepoDelete}, tLog.Stack)
+			assert.Equal(t, err, pgUserRepository.ErrInternal)
+			assert.Equal(t, []any{pgUserRepository.TraceDelete}, tLog.Stack)
 			assert.NotEmpty(t, tLog.Message)
 			tLog.Clean()
 		})
