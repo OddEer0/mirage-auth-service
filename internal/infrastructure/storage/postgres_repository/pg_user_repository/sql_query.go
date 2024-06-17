@@ -1,4 +1,4 @@
-package postgresRepository
+package pgUserRepository
 
 const (
 	CreateUserQuery = `INSERT INTO users (id, login, email, password, role, isBanned, banReason, updatedAt, createdAt)

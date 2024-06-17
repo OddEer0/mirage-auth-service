@@ -9,6 +9,7 @@ import (
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/config"
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
 	postgresRepository "github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres_repository"
+	pgUserRepository "github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres_repository/pg_user_repository"
 )
 
 type Dependencies struct {
@@ -22,7 +23,7 @@ type Dependencies struct {
 
 func New(cfg *config.Config, log domain.Logger, db postgres.Query) *Dependencies {
 	// postgres Repository initialize
-	pgUserRepo := postgresRepository.NewUserRepository(log, db)
+	pgUserRepo := pgUserRepository.New(log, db)
 	pgJwtTokenRepo := postgresRepository.NewTokenRepository(log, db)
 	pgUserActivateRepo := postgresRepository.NewUserActivateRepository(log, db)
 

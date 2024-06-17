@@ -5,7 +5,7 @@ import (
 	"github.com/OddEer0/mirage-auth-service/internal/infrastructure/storage/postgres"
 )
 
-func getTableCount(ctx context.Context, conn postgres.Query, tableName string) (uint, error) {
+func GetTableCount(ctx context.Context, conn postgres.Query, tableName string) (uint, error) {
 	var result uint
 	err := conn.QueryRow(ctx, `
         SELECT COUNT(*)
@@ -17,7 +17,7 @@ func getTableCount(ctx context.Context, conn postgres.Query, tableName string) (
 	return result, nil
 }
 
-func getPageCount(ctx context.Context, conn postgres.Query, tableName string, limit uint) (uint, error) {
+func GetPageCount(ctx context.Context, conn postgres.Query, tableName string, limit uint) (uint, error) {
 	var result uint
 	err := conn.QueryRow(ctx, `
         SELECT COUNT(*)
