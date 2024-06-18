@@ -16,11 +16,6 @@ func Connect(cfg *config.Config, log domain.Logger) (Query, error) {
 		return nil, err
 	}
 	log.Info("connect Postgres")
-	err = InitMigration(ctx, conn, log)
-	if err != nil {
-		return nil, err
-	}
-	log.Info("success init postgres")
 	err = InitSuperAdmin(ctx, conn, cfg, log)
 	if err != nil {
 		return nil, err

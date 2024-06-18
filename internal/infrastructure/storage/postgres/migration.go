@@ -10,45 +10,6 @@ import (
 	"time"
 )
 
-func InitMigration(ctx context.Context, conn Query, log domain.Logger) error {
-	if _, err := conn.Exec(ctx, `CREATE TABLE IF NOT EXISTS users (
-		id UUID PRIMARY KEY,
-		login VARCHAR(50) NOT NULL UNIQUE,
-		email VARCHAR(50) NOT NULL UNIQUE,
-		password VARCHAR(255) NOT NULL,
-		role VARCHAR(30) NOT NULL,
-		isBanned BOOLEAN NOT NULL,
-		banReason VARCHAR(255),
-		updatedAt DATE NOT NULL,
-		createdAt DATE NOT NULL
-	)`); err != nil {
-		return err
-	}
-
-	if _, err := conn.Exec(ctx, `CREATE TABLE IF NOT EXISTS tokens (
-		id UUID PRIMARY KEY REFERENCES users(id),
-    	value VARCHAR(255) NOT NULL,
-    	updatedAt DATE NOT NULL,
-		createdAt DATE NOT NULL
-	)`); err != nil {
-		return err
-	}
-
-	if _, err := conn.Exec(ctx, `CREATE TABLE IF NOT EXISTS user_activate (
-		id UUID PRIMARY KEY REFERENCES users(id),
-    	isActivate BOOLEAN NOT NULL,
-    	link VARCHAR(255) NOT NULL,
-    	updatedAt DATE NOT NULL,
-		createdAt DATE NOT NULL
-	)`); err != nil {
-		return err
-	}
-
-	log.Info("success init migration")
-
-	return nil
-}
-
 func InitSuperAdmin(ctx context.Context, conn Query, cfg *config.Config, log domain.Logger) error {
 	query := "SELECT EXISTS(SELECT 1 FROM users WHERE login = $1)"
 	var exists bool
