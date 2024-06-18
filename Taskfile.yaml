@@ -26,3 +26,7 @@ tasks:
       - go build $MOCKGEN_TEST_SCRIPT_FILE
       - ./main
       - rm main
+  migration-setup:
+    cmds:
+      - export GOOSE_DRIVER=postgres
+      - export GOOSE_DBSTRING=postgresql://eer0:hahaha4142@localhost:5500/mirage-auth-service?sslmode=disable
